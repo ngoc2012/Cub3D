@@ -6,7 +6,7 @@
 /*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/09/19 12:21:29 by minh-ngu         ###   ########.fr       */
+/*   Updated: 2023/09/20 14:10:03 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,10 @@ static void	get_position(t_game *g, int i, int j, char c)
 		g->map.v[j][i] = 1;
 	else if (ft_strchr("NSWE", c))
 	{
-		g->pos.x = j;
-		g->pos.y = i;
-		g->pos.px = j * BOX_SIZE + BOX_SIZE / 2;
-		g->pos.py = i * BOX_SIZE + BOX_SIZE / 2;
+		g->pos.x = i;
+		g->pos.y = j;
+		g->pos.px = i * BOX_SIZE + BOX_SIZE / 2;
+		g->pos.py = j * BOX_SIZE + BOX_SIZE / 2;
 		if (c == 'N')
 			g->pos.alpha = 90;
 		else if (c == 'S')
@@ -70,12 +70,15 @@ void	get_map(t_game *g, char *fn)
 	while (s)
 	{
 		g->map.h++;
-		if ((int) ft_strlen(s) > g->map.l)
-			g->map.l = (int) ft_strlen(s);
+		if ((int) ft_strlen(s) - 1> g->map.l)
+			g->map.l = (int) ft_strlen(s) - 1;
 		free(s);
 		s = get_next_line(fd);
 	}
+	//printf("h = %d, l = %d\n", g->map.h, g->map.l);
 	close(fd);
+	g->map.ph = g->map.h * BOX_SIZE;
+	g->map.pl = g->map.l * BOX_SIZE;
 	g->map.v = malloc(sizeof(int *) * g->map.h);
 	fd = open(fn, O_RDONLY);
 	j = -1;

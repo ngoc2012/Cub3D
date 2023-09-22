@@ -6,16 +6,24 @@
 /*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/09/19 13:49:52 by minh-ngu         ###   ########.fr       */
+/*   Updated: 2023/09/22 10:59:05 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include "cub3D.h"
 
 void	end_game(t_game *g, int exit_code, char *s)
 {
-	mlx_destroy_image(g->mlx.mlx, g->mlx.img);
+	if (g->tex_n.img)
+		mlx_destroy_image(g->mlx.mlx, g->tex_n.img);
+	if (g->tex_s.img)
+		mlx_destroy_image(g->mlx.mlx, g->tex_s.img);
+	if (g->tex_w.img)
+		mlx_destroy_image(g->mlx.mlx, g->tex_w.img);
+	if (g->tex_e.img)
+		mlx_destroy_image(g->mlx.mlx, g->tex_e.img);
+	if (g->mlx.img)
+		mlx_destroy_image(g->mlx.mlx, g->mlx.img);
 	mlx_destroy_window(g->mlx.mlx, g->mlx.win);
 	mlx_destroy_display(g->mlx.mlx);
 	free(g->mlx.mlx);
@@ -29,11 +37,18 @@ void	init(t_game *g)
 {
 	g->map.h = 0;
 	g->map.l = 0;
+	g->map.ph = 0;
+	g->map.pl = 0;
 	g->pos.x = 0;
 	g->pos.y = 0;
 	g->pos.alpha = 90;
 	g->pos.alpha = 90;
 	g->dpp = (int) WIDTH / 2 / tan(PI /180 * FOV / 2);
+	g->tex_n.img = 0;
+	g->tex_s.img = 0;
+	g->tex_w.img = 0;
+	g->tex_e.img = 0;
+	g->mlx.img = 0;
 	//printf("dpp %d\n", g->dpp);
 }
 
@@ -53,7 +68,8 @@ int	main()
 	//mlx_hook(g.win, ClientMessage, LeaveWindowMask, &end_prog, p);
 	g.mlx.img = mlx_new_image(g.mlx.mlx, WIDTH, HEIGHT);
 	g.mlx.addr = mlx_get_data_addr(g.mlx.img, &g.mlx.bpp, &g.mlx.ll, &g.mlx.ed);
-	//printf("g.h = %d, g.l = %d, g.x = %d, g.y = %d, g.dx = %f, g.dy = %f\n", g.map.h , g.map.l , g.pos.x , g.pos.y , g.pos.dx , g.pos.dy);
+	if (!get_textures(&g))
+		end_game(&g, EXIT_FAILURE, "Error textures load\n");
 	draw(&g);
 	mlx_loop(g.mlx.mlx);
 }
