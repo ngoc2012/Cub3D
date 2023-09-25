@@ -6,7 +6,7 @@
 /*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/09/22 11:49:25 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/09/25 11:34:56 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,29 @@ void	redraw(t_game *g)
 	}
 }
  
-void	draw_wall(t_game *g)
+void	render_object(t_tex *t, int *bg, int x0, int y0)
+{
+	int	x;
+	int	y;
+
+	x0 -= t->l / 2;
+	y0 -= t->h;
+	y = -1;
+	while (++y < t->h)
+	{
+		x = -1;
+		while (++x < t->l)
+		{
+			if (*((int*) t->addr + x + y * t->l) > 0)
+				*((int*) bg + x + x0 + (y + y0) * WIDTH) = *((int*) t->addr + x + y * t->l);
+		}
+	}
+}
+
+void	render_backgroud(t_game *g)
 {
 	int	ix;
-	int	Xp;
 	double	ai;
-	double	ai0;
 	double	Apx;
 	double	Apy;
 	int	Ax;
@@ -56,8 +73,12 @@ void	draw_wall(t_game *g)
 	double	tol_l;
 	int	*addr;
 	int	*addr_t;
+	int	*addr_f;
+	int	*addr_c;
 	t_tex	*tex;
 
+	addr_f = (int *)g->tex[FL].addr;
+	addr_c = (int *)g->tex[CL].addr;
 	g->pos.Ax = -1;
 	g->pos.Ay = -1;
 	g->pos.Bx = -1;
@@ -70,10 +91,7 @@ void	draw_wall(t_game *g)
 	{
 		dA = 0.0;
 		dB = 0.0;
-		Xp = WIDTH / 2 - ix;
-		ai0 = atan((double) Xp / g->dpp) * 180 / PI; 
-		ai = g->pos.alpha + ai0;
-		ai = angle_convert(ai);
+		ai = g->ai[ix][g->pos.rot];
 		if ((-tol_l < ai && ai < tol_l) || (180.0 - tol_l < ai) || ai < -(180.0 - tol_l))
 		{
 			if (ai < tol_l && ai > -tol_l)
@@ -83,23 +101,40 @@ void	draw_wall(t_game *g)
 			}
 			else
 			{
-				Bpx = ((int) (g->pos.px / BOX_SIZE)) * BOX_SIZE - 1;
+				Bpx = ((int) (g->pos.px / BOX_SIZE)) * BOX_SIZE;
 				dpx = -BOX_SIZE;
 			}
-			Bpy = g->pos.py + (g->pos.px - Bpx) * tan(ai * PI / 180.0);
-			dpy = BOX_SIZE * tan(ai * PI / 180.0);
+			Bpy = g->pos.py + (g->pos.px - Bpx) * g->tan_ai[ix][g->pos.rot];
+			dpy = BOX_SIZE * g->tan_ai[ix][g->pos.rot];
 			if (ai * dpy > 0)
 				dpy = -dpy;
-			Bx = Bpx / BOX_SIZE;
+			if (ai < tol_l && ai > -tol_l)
+				Bx = Bpx / BOX_SIZE;
+			else
+				Bx = Bpx / BOX_SIZE - 1;
 			By = g->pos.y;
-			while (!g->map.v[By][Bx])
+			while (g->map.v[By][Bx] != B_WALL || g->map.v[By][Bx] != B_DOOR)
 			{
 				Bpx += dpx;
 				Bpy += dpy;
-				Bx = Bpx / BOX_SIZE;
+				if (ai < tol_l && ai > -tol_l)
+					Bx = Bpx / BOX_SIZE;
+				else
+					Bx = Bpx / BOX_SIZE - 1;
 			}
 			dA = INFINI;
-			dB = (Bpx - g->pos.px) / cos(ai * PI / 180);
+			if (g->map.v[By][Bx] == B_DOOR && ai < tol_l && ai > -tol_l)
+			{
+				dB = (Bpx - g->pos.px + BOX_SIZE / 2) / cos(ai * PI / 180);
+				Bpy += dpy / 2;
+			}
+			else if (g->map.v[By][Bx] == B_DOOR)
+			{
+				dB = (Bpx - g->pos.px - BOX_SIZE / 2) / cos(ai * PI / 180);
+				Bpy += dpy / 2;
+			}
+			else
+				dB = (Bpx - g->pos.px) / cos(ai * PI / 180);
 			g->pos.Bx = Bx;
 			g->pos.By = By;
 		}
@@ -107,7 +142,7 @@ void	draw_wall(t_game *g)
 		{
 			if (ai > 90.0 - tol_h)
 			{
-				Apy = ((int) (g->pos.py / BOX_SIZE)) * BOX_SIZE - 1;
+				Apy = ((int) (g->pos.py / BOX_SIZE)) * BOX_SIZE;
 				dpy = -BOX_SIZE;
 			}
 			else
@@ -115,19 +150,36 @@ void	draw_wall(t_game *g)
 				Apy = ((int) (g->pos.py / BOX_SIZE)) * BOX_SIZE + BOX_SIZE;
 				dpy = BOX_SIZE;
 			}
-			Apx = g->pos.px + (g->pos.py - Apy) * cos(ai * PI / 180.0) / sin(ai * PI / 180.0);
-			dpx = BOX_SIZE * cos(ai * PI / 180.0) / sin(ai * PI / 180.0);
+			Apx = g->pos.px + (g->pos.py - Apy) * g->cos_ai[ix][g->pos.rot] / g->sin_ai[ix][g->pos.rot];
+			dpx = BOX_SIZE * g->cos_ai[ix][g->pos.rot] / g->sin_ai[ix][g->pos.rot];
 			if (ai < 0)
 				dpx = -dpx;
-			Ay = Apy / BOX_SIZE;
+			if (ai > 0.0)
+				Ay = Apy / BOX_SIZE - 1;
+			else
+				Ay = Apy / BOX_SIZE;
 			Ax = g->pos.x;
-			while (!g->map.v[Ay][Ax])
+			while (g->map.v[Ay][Ax] != B_WALL || g->map.v[Ay][Ax] != B_DOOR)
 			{
 				Apx += dpx;
 				Apy += dpy;
-				Ay = Apy / BOX_SIZE;
+				if (ai > 0.0)
+					Ay = Apy / BOX_SIZE - 1;
+				else
+					Ay = Apy / BOX_SIZE;
 			}
-			dA = (g->pos.py - Apy) / sin(ai * PI / 180);
+			if (g->map.v[Ay][Ax] == B_DOOR && ai > 0.0)
+			{
+				dA = (g->pos.py - Apy + BOX_SIZE / 2) / sin(ai * PI / 180);
+				Apx += dpx / 2;
+			}
+			else if (g->map.v[Ay][Ax] == B_DOOR)
+			{
+				dA = (g->pos.py - Apy - BOX_SIZE / 2) / sin(ai * PI / 180);
+				Apx += dpx / 2;
+			}
+			else
+				dA = (g->pos.py - Apy) / sin(ai * PI / 180);
 			dB = INFINI;
 			g->pos.Ax = Ax;
 			g->pos.Ay = Ay;
@@ -138,7 +190,7 @@ void	draw_wall(t_game *g)
 			//Find A
 			if (ai > 0.0)
 			{
-				Apy = ((int) (g->pos.py / BOX_SIZE)) * BOX_SIZE - 1;
+				Apy = ((int) (g->pos.py / BOX_SIZE)) * BOX_SIZE;
 				dpy = -BOX_SIZE;
 			}
 			else
@@ -146,8 +198,8 @@ void	draw_wall(t_game *g)
 				Apy = ((int) (g->pos.py / BOX_SIZE)) * BOX_SIZE + BOX_SIZE;
 				dpy = BOX_SIZE;
 			}
-			Apx = g->pos.px + (g->pos.py - Apy) / tan(ai * PI / 180.0);
-			dpx = BOX_SIZE / tan(ai * PI / 180.0);
+			Apx = g->pos.px + (g->pos.py - Apy) / g->tan_ai[ix][g->pos.rot];
+			dpx = BOX_SIZE / g->tan_ai[ix][g->pos.rot];
 			if (ai < 0)
 				dpx = -dpx;
 			if (Apx < 0 && Apx >= g->map.pl)
@@ -155,19 +207,36 @@ void	draw_wall(t_game *g)
 			else
 			{
 				Ax = Apx / BOX_SIZE;
-				Ay = Apy / BOX_SIZE;
-				while (Apx >= 0 && Apx < g->map.pl && !g->map.v[Ay][Ax])
+				if (ai > 0.0)
+					Ay = Apy / BOX_SIZE - 1;
+				else
+					Ay = Apy / BOX_SIZE;
+				while (Apx >= 0 && Apx < g->map.pl && g->map.v[Ay][Ax] != B_WALL && g->map.v[Ay][Ax] != B_DOOR)
 				{
 					Apx += dpx;
 					Apy += dpy;
 					Ax = Apx / BOX_SIZE;
-					Ay = Apy / BOX_SIZE;
+					if (ai > 0.0)
+						Ay = Apy / BOX_SIZE - 1;
+					else
+						Ay = Apy / BOX_SIZE;
 				}
 				if (Apx < 0 || Apx >= g->map.pl)
 					dA = INFINI;
 				else
 				{
-					dA = (g->pos.py - Apy) / sin(ai * PI / 180);
+					if (g->map.v[Ay][Ax] == B_DOOR && ai > 0.0)
+					{
+						dA = (g->pos.py - Apy + BOX_SIZE / 2) / sin(ai * PI / 180);
+						Apx += dpx / 2;
+					}
+					else if (g->map.v[Ay][Ax] == B_DOOR)
+					{
+						dA = (g->pos.py - Apy - BOX_SIZE / 2) / sin(ai * PI / 180);
+						Apx += dpx / 2;
+					}
+					else
+						dA = (g->pos.py - Apy) / g->sin_ai[ix][g->pos.rot];
 					g->pos.Ax = Ax;
 					g->pos.Ay = Ay;
 				}
@@ -180,31 +249,48 @@ void	draw_wall(t_game *g)
 			}
 			else
 			{
-				Bpx = ((int) (g->pos.px / BOX_SIZE)) * BOX_SIZE - 1;
+				Bpx = ((int) (g->pos.px / BOX_SIZE)) * BOX_SIZE;
 				dpx = -BOX_SIZE;
 			}
-			Bpy = g->pos.py + (g->pos.px - Bpx) * tan(ai * PI / 180.0);
-			dpy = BOX_SIZE * tan(ai * PI / 180.0);
+			Bpy = g->pos.py + (g->pos.px - Bpx) * g->tan_ai[ix][g->pos.rot];
+			dpy = BOX_SIZE * g->tan_ai[ix][g->pos.rot];
 			if (ai * dpy > 0)
 				dpy = -dpy;
 			if (Bpy < 0 || Bpy >= g->map.ph)
 				dB = INFINI;
 			else
 			{
-				Bx = Bpx / BOX_SIZE;
+				if (ai > -90.0 && ai < 90.0)
+					Bx = Bpx / BOX_SIZE;
+				else
+					Bx = Bpx / BOX_SIZE - 1;
 				By = Bpy / BOX_SIZE;
-				while (Bpy >= 0 && Bpy < g->map.ph && !g->map.v[By][Bx])
+				while (Bpy >= 0 && Bpy < g->map.ph && g->map.v[By][Bx] != B_WALL && g->map.v[By][Bx] != B_DOOR)
 				{
 					Bpx += dpx;
 					Bpy += dpy;
-					Bx = Bpx / BOX_SIZE;
+					if (ai > -90.0 && ai < 90.0)
+						Bx = Bpx / BOX_SIZE;
+					else
+						Bx = Bpx / BOX_SIZE - 1;
 					By = Bpy / BOX_SIZE;
 				}
 				if (Bpy < 0 || Bpy >= g->map.ph)
 					dB = INFINI;
 				else
 				{
-					dB = (Bpx - g->pos.px) / cos(ai * PI / 180.0);
+					if (g->map.v[By][Bx] == B_DOOR && ai > -90.0 && ai < 90.0)
+					{
+						dB = (Bpx - g->pos.px + BOX_SIZE / 2) / cos(ai * PI / 180);
+						Bpy += dpy / 2;
+					}
+					else if (g->map.v[By][Bx] == B_DOOR)
+					{
+						dB = (Bpx - g->pos.px - BOX_SIZE / 2) / cos(ai * PI / 180);
+						Bpy += dpy / 2;
+					}
+					else
+						dB = (Bpx - g->pos.px) / g->cos_ai[ix][g->pos.rot];
 					g->pos.Bx = Bx;
 					g->pos.By = By;
 				}
@@ -218,21 +304,25 @@ void	draw_wall(t_game *g)
 		double	d;
 		if (dA > dB)
 		{
-			d = dB * cos(ai0 * PI / 180.0);
+			d = dB / g->cos_ai0[ix];
 			tx = (int) (Bpy - BOX_SIZE * (double) By);
-			if (ai > -90 && ai < 90)
-				tex = &g->tex_w;
+			if (g->map.v[By][Bx] == B_DOOR)
+				tex = &g->tex[DO];
+			else if (ai > -90 && ai < 90)
+				tex = &g->tex[WE];
 			else
-				tex = &g->tex_e;
+				tex = &g->tex[EA];
 		}
 		else
 		{
-			d = dA * cos(ai0 * PI / 180.0);
+			d = dA / g->cos_ai0[ix];
 			tx = (int) (Apx - BOX_SIZE * (double) Ax);
-			if (ai > 0)
-				tex = &g->tex_n;
+			if (g->map.v[Ay][Ax] == B_DOOR)
+				tex = &g->tex[DO];
+			else if (ai > 0)
+				tex = &g->tex[NO];
 			else
-				tex = &g->tex_s;
+				tex = &g->tex[SO];
 		}
 		if (d < 0)
 			d = -d;
@@ -246,26 +336,71 @@ void	draw_wall(t_game *g)
 		addr_t = (int *)tex->addr;
 		addr += ix;
 		int	start = HEIGHT / 2 - h_slide / 2;
-		addr += start * WIDTH;
+		double	dh;
+		int	xh;
+		int	yh;
+		double	xph;
+		double	yph;
+		yp = -1;
+		while (++yp < start)
+		{
+			if (HEIGHT / 2 - yp)
+			{
+				dh = g->dpp * BOX_SIZE / 2 / (HEIGHT / 2 - yp) * g->cos_ai0[ix];
+				xph = g->pos.px + dh * g->cos_ai[ix][g->pos.rot];
+				yph = g->pos.py - dh * g->sin_ai[ix][g->pos.rot];
+				xh = (int) (xph - ((int) (xph / BOX_SIZE)) * BOX_SIZE);
+				yh = (int) (yph - ((int) (yph / BOX_SIZE)) * BOX_SIZE);
+				if (xh < BOX_SIZE && xh >= 0 && yh < BOX_SIZE && yh >= 0)
+					*addr = *(addr_c + xh + yh * g->tex[CL].l);
+			}
+			addr += WIDTH;
+		}
 		yp = -1;
 		while (++yp < h_slide)
 		{
 			ty = (int) (((h - (double) h_slide) / 2.0 + (double) yp) / p);
-			if (ty > BOX_SIZE - 1 || ty < 0)
-				printf("ty = %d\n", ty);
-			if (tx > BOX_SIZE - 1 || tx < 0)
-				printf("tx = %d\n", tx);
 			if (tx < BOX_SIZE && tx >= 0 && ty < BOX_SIZE && ty >= 0)
 				*addr = *(addr_t + tx + ty * tex->l);
 			addr += WIDTH;
 		}
+		yp = start + h_slide - 1;
+		while (++yp < HEIGHT)
+		{
+			dh = g->dpp * BOX_SIZE / 2 / (yp - HEIGHT / 2) * g->cos_ai0[ix];
+			xph = g->pos.px + dh * g->cos_ai[ix][g->pos.rot];
+			yph = g->pos.py - dh * g->sin_ai[ix][g->pos.rot];
+			xh = (int) (xph - ((int) (xph / BOX_SIZE)) * BOX_SIZE);
+			yh = (int) (yph - ((int) (yph / BOX_SIZE)) * BOX_SIZE);
+			if (xh < BOX_SIZE && xh >= 0 && yh < BOX_SIZE && yh >= 0)
+				*addr = *(addr_f + xh + yh * g->tex[FL].l);
+			addr += WIDTH;
+		}
 	}
-	mlx_put_image_to_window(g->mlx.mlx, g->mlx.win, g->mlx.img, 0, 0);
+}
+
+void	scale_window(t_game *g)
+{
+	if (SCALE > 1)
+	{
+		int	x;
+		int	y;
+		y = HEIGHT * SCALE;
+		while (--y >= 0)
+		{
+
+			x = WIDTH * SCALE;
+			while (--x >= 0)
+				*((int*) g->mlx.addr_scale + x + y * WIDTH * SCALE) = *((int*) g->mlx.addr + x / SCALE + y / SCALE * WIDTH);
+		}
+		mlx_put_image_to_window(g->mlx.mlx, g->mlx.win, g->mlx.img_scale, 0, 0);
+	}
+	else
+		mlx_put_image_to_window(g->mlx.mlx, g->mlx.win, g->mlx.img, 0, 0);
 }
 
 void	draw_map(t_game *g)
 {
-	printf("draw map\n");
 	int	i = -1;
 	int	j = -1;
 
@@ -290,10 +425,33 @@ void	draw_map(t_game *g)
 	}
 }
 
-void	draw(t_game *g)
+int	draw(t_game *g)
 {
-	draw_wall(g);
-	//draw_map(g);
+	int	i;
+
+	if (g->frames[FR_UP] > TRANS_SPEED)
+		g->frames[FR_UP] = 0;
+	if (g->frames[FR_DOWN] > TRANS_SPEED)
+		g->frames[FR_DOWN] = 0;
+	if (g->frames[FR_RIGHT] > ROT_SPEED)
+		g->frames[FR_RIGHT] = 0;
+	if (g->frames[FR_LEFT] > ROT_SPEED)
+		g->frames[FR_LEFT] = 0;
+	if (g->frames[FR_GUN] > GUN_SPEED)
+		g->frames[FR_GUN] = 0;
+	if (g->frames[FR_GUN] == 1)
+		g->gun_tex = &g->gun[1];
+	else if (g->frames[FR_GUN] == 2)
+		g->gun_tex = &g->gun[2];
+	else
+		g->gun_tex = &g->gun[0];
+	i = -1;
+	while (++i < N_FRAMES)
+		if (g->frames[i])
+			g->frames[i]++;
+	render_backgroud(g);
+	render_object(g->gun_tex, (int *) g->mlx.addr, WIDTH / 2, HEIGHT);
+	scale_window(g);
 	draw_mini_map(g);
-	//end_game(g, 0, 0);
+	return (1);
 }

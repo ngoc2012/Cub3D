@@ -6,7 +6,7 @@
 /*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/09/20 14:10:03 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/09/25 10:39:33 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,40 +25,54 @@ void	free_map(t_map *m)
 
 static void	get_position(t_game *g, int i, int j, char c)
 {
-	if (c == '1')
-		g->map.v[j][i] = 1;
+	if (c == '0')
+		g->map.v[j][i] = B_GROUND;
+	else if (c == '1')
+		g->map.v[j][i] = B_WALL;
 	else if (c == '2')
-		g->map.v[j][i] = 2;
+	{
+		g->map.v[j][i] = B_SPRITE;
+		g->map.v[j][i] = B_GROUND;
+	}
 	else if (c == '3')
-		g->map.v[j][i] = 3;
+		g->map.v[j][i] = B_D3;
 	else if (c == '4')
-		g->map.v[j][i] = 4;
+		g->map.v[j][i] = B_D4;
 	else if (c == '5')
-		g->map.v[j][i] = 5;
+		g->map.v[j][i] = B_D5;
 	else if (c == '6')
-		g->map.v[j][i] = 6;
-	else if (c == '7')
-		g->map.v[j][i] = 7;
+		g->map.v[j][i] = B_D6;
+	else if (c == 'X')
+		g->map.v[j][i] = B_DOOR;
 	else if (c == ' ')
-		g->map.v[j][i] = 1;
+		g->map.v[j][i] = B_EMPTY;
 	else if (ft_strchr("NSWE", c))
 	{
+		g->map.v[j][i] = B_GROUND;
 		g->pos.x = i;
 		g->pos.y = j;
 		g->pos.px = i * BOX_SIZE + BOX_SIZE / 2;
 		g->pos.py = j * BOX_SIZE + BOX_SIZE / 2;
 		if (c == 'N')
-			g->pos.alpha = 90;
+			g->pos.rot = 90 / ROT_STEP;
 		else if (c == 'S')
-			g->pos.alpha = -90;
+			g->pos.rot = 270 / ROT_STEP;
 		else if (c == 'W')
-			g->pos.alpha = 180;
+			g->pos.rot = 180 / ROT_STEP;
 		else if (c == 'E')
-			g->pos.alpha = 0;
+			g->pos.rot = 0;
 	}
 }
 
-void	get_map(t_game *g, char *fn)
+int	check_map(char *s)
+{
+	while (*s)
+		if (!ft_strchr(MAP_CHAR, *(s++)))
+			return (0);
+	return (1);
+}
+
+int	get_map(t_game *g, char *fn)
 {
 	int	fd;
 	char	*s;
@@ -66,36 +80,46 @@ void	get_map(t_game *g, char *fn)
 	int	j;
 
 	fd = open(fn, O_RDONLY);
+	if (fd == -1)
+		return (0);
 	s = get_next_line(fd);
 	while (s)
 	{
-		g->map.h++;
-		if ((int) ft_strlen(s) - 1> g->map.l)
-			g->map.l = (int) ft_strlen(s) - 1;
+		if (check_map(s))
+		{
+			g->map.h++;
+			if ((int) ft_strlen(s) - 1> g->map.l)
+				g->map.l = (int) ft_strlen(s) - 1;
+		}
 		free(s);
 		s = get_next_line(fd);
 	}
-	//printf("h = %d, l = %d\n", g->map.h, g->map.l);
 	close(fd);
 	g->map.ph = g->map.h * BOX_SIZE;
 	g->map.pl = g->map.l * BOX_SIZE;
-	g->map.v = malloc(sizeof(int *) * g->map.h);
+	g->map.v = malloc(sizeof(enum e_map *) * g->map.h);
 	fd = open(fn, O_RDONLY);
 	j = -1;
 	s = get_next_line(fd);
 	while (s)
 	{
-		g->map.v[++j] = malloc(sizeof(int) * g->map.l);
-		i = 0;
-		while (i < g->map.l)
-			g->map.v[j][i++] = 0;
-		i = -1;
-		while (s[++i])
-			get_position(g, i, j, s[i]);
+		if (check_map(s))
+		{
+			g->map.v[++j] = malloc(sizeof(enum e_map) * g->map.l);
+			i = 0;
+			while (i < g->map.l)
+				g->map.v[j][i++] = B_EMPTY;
+			i = -1;
+			while (s[++i])
+				get_position(g, i, j, s[i]);
+			while (i++ < g->map.l)
+				g->map.v[j][i++] = B_EMPTY;
+		}
 		free(s);
 		s = get_next_line(fd);
 	}
 	close(fd);
 	if (g->map.h < 5 || g->map.l < 5)
 		end_game(g, 1, "Invalid map");
+	return (1);
 }

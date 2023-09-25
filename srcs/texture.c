@@ -6,28 +6,94 @@
 /*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 05:38:38 by ngoc              #+#    #+#             */
-/*   Updated: 2023/09/22 11:19:42 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/09/24 10:55:16 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
-int	get_textures(t_game *g)
+static int	get_texture(t_game *g, t_tex *t, char *path)
 {
-	g->tex_n.img = mlx_xpm_file_to_image(g->mlx.mlx, "colorstone.xpm", &g->tex_n.l, &g->tex_n.h);
-	if (!g->tex_n.img)
+	if (t->img)
+		mlx_destroy_image(g->mlx.mlx, t->img);
+	t->img = mlx_xpm_file_to_image(g->mlx.mlx, path, &t->l, &t->h);
+	if (!t->img)
 		return (0);
-	g->tex_n.addr = mlx_get_data_addr(g->tex_n.img, &g->tex_n.bpp, &g->tex_n.ll, &g->tex_n.ed);
-	g->tex_s.img = mlx_xpm_file_to_image(g->mlx.mlx, "bluestone.xpm", &g->tex_s.l, &g->tex_s.h);
-	if (!g->tex_s.img)
+	t->addr = mlx_get_data_addr(t->img, &t->bpp, &t->ll, &t->ed);
+	return (1);
+}
+
+int	return_error(char *s, char **ss)
+{
+	free_array_str(&ss, 0);
+	free(s);
+	return (0);
+}
+
+int	get_textures(t_game *g, char *fn)
+{
+	int		fd;
+	char	*s;
+	char	*s0;
+	char	**ss;
+
+	get_texture(g, &g->gun[0], "./guns/gun1a.xpm");
+	get_texture(g, &g->gun[1], "./guns/gun1b.xpm");
+	get_texture(g, &g->gun[2], "./guns/gun1c.xpm");
+	get_texture(g, &g->tex[NO], "./walls/beamskin3.xpm");
+	get_texture(g, &g->tex[SO], "./walls/tile32.xpm");
+	get_texture(g, &g->tex[WE], "./walls/tile105.xpm");
+	get_texture(g, &g->tex[EA], "./walls/steelwall6.xpm");
+	get_texture(g, &g->tex[DO], "./walls/bigdoor.xpm");
+	get_texture(g, &g->tex[FL], "./walls/floorsteel.xpm");
+	get_texture(g, &g->tex[CL], "./walls/floorskin.xpm");
+	get_texture(g, &g->tex[D3], "./sprites/crate.xpm");
+	get_texture(g, &g->tex[D4], "./sprites/d_table.xpm");
+	get_texture(g, &g->tex[D5], "./sprites/d_tree.xpm");
+	get_texture(g, &g->tex[D6], "./sprites/i_health.xpm");
+	fd = open(fn, O_RDONLY);
+	if (fd == -1)
 		return (0);
-	g->tex_s.addr = mlx_get_data_addr(g->tex_s.img, &g->tex_s.bpp, &g->tex_s.ll, &g->tex_s.ed);
-	g->tex_w.img = mlx_xpm_file_to_image(g->mlx.mlx, "greystone.xpm", &g->tex_w.l, &g->tex_w.h);
-	if (!g->tex_w.img)
-		return (0);
-	g->tex_w.addr = mlx_get_data_addr(g->tex_w.img, &g->tex_w.bpp, &g->tex_w.ll, &g->tex_w.ed);
-	g->tex_e.img = mlx_xpm_file_to_image(g->mlx.mlx, "eagle.xpm", &g->tex_e.l, &g->tex_e.h);
-	if (!g->tex_e.img)
-		return (0);
-	g->tex_e.addr = mlx_get_data_addr(g->tex_e.img, &g->tex_e.bpp, &g->tex_e.ll, &g->tex_e.ed);
+	s = get_next_line(fd);
+	while (s)
+	{
+		s0 = s;
+		while (ft_strchr(" 	\n", *s))
+			s++;
+		if (ft_strlen(s) > 1)
+		{
+			s[ft_strlen(s) - 1] = 0;
+			ss = ft_split(s, ' ');
+			if (astr_len(ss) > 1)
+			{
+				if (!ft_strncmp("NO", ss[0], 3) && !get_texture(g, &g->tex[NO], ss[1]))
+					return (return_error(s, ss));
+				if (!ft_strncmp("SO", ss[0], 3) && !get_texture(g, &g->tex[SO], ss[1]))
+					return (return_error(s, ss));
+				if (!ft_strncmp("WE", ss[0], 3) && !get_texture(g, &g->tex[WE], ss[1]))
+					return (return_error(s, ss));
+				if (!ft_strncmp("EA", ss[0], 3) && !get_texture(g, &g->tex[EA], ss[1]))
+					return (return_error(s, ss));
+				if (!ft_strncmp("DO", ss[0], 3) && !get_texture(g, &g->tex[DO], ss[1]))
+					return (return_error(s, ss));
+				if (!ft_strncmp("FL", ss[0], 3) && !get_texture(g, &g->tex[FL], ss[1]))
+					return (return_error(s, ss));
+				if (!ft_strncmp("CL", ss[0], 3) && !get_texture(g, &g->tex[CL], ss[1]))
+					return (return_error(s, ss));
+				if (!ft_strncmp("D3", ss[0], 3) && !get_texture(g, &g->tex[D3], ss[1]))
+					return (return_error(s, ss));
+				if (!ft_strncmp("D4", ss[0], 3) && !get_texture(g, &g->tex[D4], ss[1]))
+					return (return_error(s, ss));
+				if (!ft_strncmp("D5", ss[0], 3) && !get_texture(g, &g->tex[D5], ss[1]))
+					return (return_error(s, ss));
+				if (!ft_strncmp("D6", ss[0], 3) && !get_texture(g, &g->tex[D6], ss[1]))
+					return (return_error(s, ss));
+			}
+			free_array_str(&ss, 0);
+		}
+		free(s0);
+		s = get_next_line(fd);
+	}
+	close(fd);
+	return (1);
 }

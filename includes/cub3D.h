@@ -6,7 +6,7 @@
 /*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 09:21:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/09/22 11:46:49 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/09/25 10:29:03 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,17 @@
 # include "libft.h"
 # include "get_next_line.h"
 
-# define WIDTH 1800
-# define HEIGHT 1200
+# define WIDTH 600
+# define HEIGHT 300
+# define SCALE 3
 # define FOV 90
 # define BOX_SIZE 64
-# define TRANS_SPEED 20
-# define ROT_SPEED 12
+# define WALL_COLISION 8
+# define TRANS_STEP 32
+# define ROT_STEP 5
+# define TRANS_SPEED 1
+# define ROT_SPEED 0
+# define GUN_SPEED 2
 # define PI 3.141592654
 # define INFINI INT_MAX
 # define COLOR_BOLD_SLOW_BLINKING      "\033[1;5m"
@@ -44,6 +49,26 @@
 # define COLOR_BOLD_BLUE               "\033[1;34m"
 # define COLOR_BOLD  "\033[1m"
 # define COLOR_OFF   "\033[m"
+# define N_TEX 11
+# define N_FRAMES 5
+# define MAP_CHAR " \n0123456NSWEX"
+
+/*
+NO: North walls
+SO: South walls
+WE: West walls
+EA: East walls
+DO: Door
+FL: Floor
+CL: Ceiling
+D3: Decor 3 (3)
+D4: Decor 4 (4)
+D5: Decor 5 (5)
+D6: Decor 6 (6)
+*/
+enum e_map {B_WALL, B_GROUND, B_EMPTY, B_DOOR, B_SPRITE, B_D3, B_D4, B_D5, B_D6};
+enum e_tex {NO, SO, WE, EA, DO, FL, CL, D3, D4, D5, D6};
+enum e_frame {FR_UP, FR_DOWN, FR_LEFT, FR_RIGHT, FR_GUN};
 
 /*
 Map:
@@ -52,7 +77,7 @@ Map:
 - l: length of map
 */
 typedef struct s_map {
-	int	**v;
+	enum e_map	**v;
 	int	h;
 	int	l;
 	int	ph;
@@ -72,7 +97,7 @@ typedef struct s_pos {
 	int		y;
 	double		px;
 	double		py;
-	int		alpha;
+	int		rot;
 	int		Ax;
 	int		Ay;
 	int		Bx;
@@ -89,10 +114,12 @@ typedef struct s_mlx {
 	void	*mlx;
 	void	*win;
 	void	*img;
+	void	*img_scale;
 	int		bpp;
 	int		ll;
 	int		ed;
 	char	*addr;
+	char	*addr_scale;
 }	t_mlx;
 
 /*
@@ -120,22 +147,32 @@ typedef struct s_game {
 	t_pos		pos;
 	t_mlx		mlx;
 	int		dpp;
-	t_tex	tex_n;
-	t_tex	tex_s;
-	t_tex	tex_w;
-	t_tex	tex_e;
-	int		texWidth;
-	int		texHeight;
+	int		frames[N_FRAMES];
+	t_tex	tex[N_TEX];
+	t_tex	gun[3];
+	t_tex	*gun_tex;
+	double	*ai0;
+	double	*cos_ai0;
+	double	**ai;
+	double	**tan_ai;
+	double	**cos_ai;
+	double	**sin_ai;
 }	t_game;
 
 void	free_map(t_map *m);
-void	get_map(t_game *g, char *fn);
-void	draw(t_game *g);
+int	get_map(t_game *g, char *fn);
+int	draw(t_game *g);
 int	key_hook(int keycode, t_game *g);
-void	end_game(t_game *g, int exit_code, char *s);
+int	end_game(t_game *g, int exit_code, char *s);
 void	draw_mini_map(t_game *g);
 double	angle_convert(double a);
 void	redraw(t_game *g);
-int	get_textures(t_game *g);
+int	get_textures(t_game *g, char *fn);
+void	render_object(t_tex *t, int *bg, int x0, int y0);
+void	render_backgroud(t_game *g);
+void	scale_window(t_game *g);
+int	key_press(int keycode, t_game *g);
+int	key_release(int keycode, t_game *g);
+int	mouse_hook(int button, int x, int y, t_game *g);
 
 #endif
