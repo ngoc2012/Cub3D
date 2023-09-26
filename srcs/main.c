@@ -6,7 +6,7 @@
 /*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/09/25 08:43:15 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/09/25 21:31:47 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,9 @@ void	init(t_game *g)
 	g->tan_ai = 0;
 	g->cos_ai = 0;
 	g->sin_ai = 0;
+	g->opened_door_x = 5;
+	g->opened_door_y = 4;
+	g->hidden_door = 20;
 	g->gun_tex = &g->gun[0];
 }
 
@@ -153,6 +156,5 @@ int	main(int argc, char **argv)
 	mlx_hook(g.mlx.win, 3, KeyReleaseMask, &key_release, &g);
 	mlx_hook(g.mlx.win, ClientMessage, LeaveWindowMask, &end_game, &g);
 	mlx_loop_hook(g.mlx.mlx, &draw, &g);
-	draw(&g);
 	mlx_loop(g.mlx.mlx);
 }

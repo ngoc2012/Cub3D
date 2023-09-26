@@ -6,7 +6,7 @@
 /*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/09/25 11:34:56 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/09/26 10:49:00 by minh-ngu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ void	render_backgroud(t_game *g)
 	int	*addr_t;
 	int	*addr_f;
 	int	*addr_c;
+	int	door_coor;
 	t_tex	*tex;
 
 	addr_f = (int *)g->tex[FL].addr;
@@ -113,7 +114,9 @@ void	render_backgroud(t_game *g)
 			else
 				Bx = Bpx / BOX_SIZE - 1;
 			By = g->pos.y;
-			while (g->map.v[By][Bx] != B_WALL || g->map.v[By][Bx] != B_DOOR)
+			door_coor = (int) (Bpx + dpy / 2 - BOX_SIZE * (double) By);
+			while ((g->map.v[By][Bx] != B_WALL && g->map.v[By][Bx] != B_DOOR)
+				|| (g->map.v[By][Bx] == B_DOOR && door_coor < g->hidden_door))
 			{
 				Bpx += dpx;
 				Bpy += dpy;
@@ -121,6 +124,7 @@ void	render_backgroud(t_game *g)
 					Bx = Bpx / BOX_SIZE;
 				else
 					Bx = Bpx / BOX_SIZE - 1;
+				door_coor = (int) (Bpy + dpy / 2 - BOX_SIZE * (double) By);
 			}
 			dA = INFINI;
 			if (g->map.v[By][Bx] == B_DOOR && ai < tol_l && ai > -tol_l)
@@ -159,7 +163,9 @@ void	render_backgroud(t_game *g)
 			else
 				Ay = Apy / BOX_SIZE;
 			Ax = g->pos.x;
-			while (g->map.v[Ay][Ax] != B_WALL || g->map.v[Ay][Ax] != B_DOOR)
+			door_coor = (int) (Apx + dpx / 2 - BOX_SIZE * (double) Ax);
+			while ((g->map.v[Ay][Ax] != B_WALL && g->map.v[Ay][Ax] != B_DOOR)
+				|| (g->map.v[Ay][Ax] == B_DOOR && door_coor < g->hidden_door))
 			{
 				Apx += dpx;
 				Apy += dpy;
@@ -167,6 +173,7 @@ void	render_backgroud(t_game *g)
 					Ay = Apy / BOX_SIZE - 1;
 				else
 					Ay = Apy / BOX_SIZE;
+				door_coor = (int) (Apx + dpx / 2 - BOX_SIZE * (double) Ax);
 			}
 			if (g->map.v[Ay][Ax] == B_DOOR && ai > 0.0)
 			{
@@ -211,7 +218,10 @@ void	render_backgroud(t_game *g)
 					Ay = Apy / BOX_SIZE - 1;
 				else
 					Ay = Apy / BOX_SIZE;
-				while (Apx >= 0 && Apx < g->map.pl && g->map.v[Ay][Ax] != B_WALL && g->map.v[Ay][Ax] != B_DOOR)
+				door_coor = (int) (Apx + dpx / 2 - BOX_SIZE * (double) Ax);
+				while ((Apx >= 0 && Apx < g->map.pl) &&
+					((g->map.v[Ay][Ax] != B_WALL && g->map.v[Ay][Ax] != B_DOOR) ||
+					(g->map.v[Ay][Ax] == B_DOOR && door_coor < g->hidden_door)))
 				{
 					Apx += dpx;
 					Apy += dpy;
@@ -220,6 +230,7 @@ void	render_backgroud(t_game *g)
 						Ay = Apy / BOX_SIZE - 1;
 					else
 						Ay = Apy / BOX_SIZE;
+					door_coor = (int) (Apx + dpx / 2 - BOX_SIZE * (double) Ax);
 				}
 				if (Apx < 0 || Apx >= g->map.pl)
 					dA = INFINI;
@@ -265,7 +276,10 @@ void	render_backgroud(t_game *g)
 				else
 					Bx = Bpx / BOX_SIZE - 1;
 				By = Bpy / BOX_SIZE;
-				while (Bpy >= 0 && Bpy < g->map.ph && g->map.v[By][Bx] != B_WALL && g->map.v[By][Bx] != B_DOOR)
+				door_coor = (int) (Bpy + dpy / 2 - BOX_SIZE * (double) By);
+				while ((Bpy >= 0 && Bpy < g->map.ph) &&
+					((g->map.v[By][Bx] != B_WALL && g->map.v[By][Bx] != B_DOOR)
+				|| (g->map.v[By][Bx] == B_DOOR && door_coor < g->hidden_door)))
 				{
 					Bpx += dpx;
 					Bpy += dpy;
@@ -274,6 +288,7 @@ void	render_backgroud(t_game *g)
 					else
 						Bx = Bpx / BOX_SIZE - 1;
 					By = Bpy / BOX_SIZE;
+					door_coor = (int) (Bpy + dpy / 2 - BOX_SIZE * (double) By);
 				}
 				if (Bpy < 0 || Bpy >= g->map.ph)
 					dB = INFINI;
@@ -307,7 +322,10 @@ void	render_backgroud(t_game *g)
 			d = dB / g->cos_ai0[ix];
 			tx = (int) (Bpy - BOX_SIZE * (double) By);
 			if (g->map.v[By][Bx] == B_DOOR)
+			{
+				tx -= g->hidden_door;
 				tex = &g->tex[DO];
+			}
 			else if (ai > -90 && ai < 90)
 				tex = &g->tex[WE];
 			else
@@ -318,7 +336,10 @@ void	render_backgroud(t_game *g)
 			d = dA / g->cos_ai0[ix];
 			tx = (int) (Apx - BOX_SIZE * (double) Ax);
 			if (g->map.v[Ay][Ax] == B_DOOR)
+			{
+				tx -= g->hidden_door;
 				tex = &g->tex[DO];
+			}
 			else if (ai > 0)
 				tex = &g->tex[NO];
 			else
@@ -356,14 +377,19 @@ void	render_backgroud(t_game *g)
 			}
 			addr += WIDTH;
 		}
-		yp = -1;
-		while (++yp < h_slide)
+		if (tx < BOX_SIZE && tx >= 0)
 		{
-			ty = (int) (((h - (double) h_slide) / 2.0 + (double) yp) / p);
-			if (tx < BOX_SIZE && tx >= 0 && ty < BOX_SIZE && ty >= 0)
-				*addr = *(addr_t + tx + ty * tex->l);
-			addr += WIDTH;
+			yp = -1;
+			while (++yp < h_slide)
+			{
+				ty = (int) (((h - (double) h_slide) / 2.0 + (double) yp) / p);
+				if (ty < BOX_SIZE && ty >= 0)
+					*addr = *(addr_t + tx + ty * tex->l);
+				addr += WIDTH;
+			}
 		}
+		else
+			addr += h_slide * WIDTH;
 		yp = start + h_slide - 1;
 		while (++yp < HEIGHT)
 		{
@@ -451,7 +477,7 @@ int	draw(t_game *g)
 			g->frames[i]++;
 	render_backgroud(g);
 	render_object(g->gun_tex, (int *) g->mlx.addr, WIDTH / 2, HEIGHT);
-	scale_window(g);
 	draw_mini_map(g);
+	scale_window(g);
 	return (1);
 }

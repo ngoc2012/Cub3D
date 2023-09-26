@@ -6,7 +6,7 @@
 /*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/09/25 10:39:33 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/09/26 10:10:50 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ static void	get_position(t_game *g, int i, int j, char c)
 		g->map.v[j][i] = B_GROUND;
 		g->pos.x = i;
 		g->pos.y = j;
+		printf("map x= %d, y = %d\n", g->pos.x, g->pos.y);
 		g->pos.px = i * BOX_SIZE + BOX_SIZE / 2;
 		g->pos.py = j * BOX_SIZE + BOX_SIZE / 2;
 		if (c == 'N')

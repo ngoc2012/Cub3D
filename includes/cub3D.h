@@ -6,7 +6,7 @@
 /*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 09:21:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/09/25 10:29:03 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/09/26 10:50:16 by minh-ngu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 
 # define WIDTH 600
 # define HEIGHT 300
-# define SCALE 3
+# define SCALE 2
 # define FOV 90
 # define BOX_SIZE 64
 # define WALL_COLISION 8
@@ -37,6 +37,8 @@
 # define TRANS_SPEED 1
 # define ROT_SPEED 0
 # define GUN_SPEED 2
+# define DOOR_SPEED 2
+# define DOOR_IDLE 2
 # define PI 3.141592654
 # define INFINI INT_MAX
 # define COLOR_BOLD_SLOW_BLINKING      "\033[1;5m"
@@ -151,6 +153,9 @@ typedef struct s_game {
 	t_tex	tex[N_TEX];
 	t_tex	gun[3];
 	t_tex	*gun_tex;
+	int	opened_door_x;
+	int	opened_door_y;
+	int	hidden_door;
 	double	*ai0;
 	double	*cos_ai0;
 	double	**ai;
