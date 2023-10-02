@@ -6,7 +6,7 @@
 /*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 05:38:38 by ngoc              #+#    #+#             */
-/*   Updated: 2023/09/24 10:55:16 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/01 12:59:20 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,17 @@ int	get_textures(t_game *g, char *fn)
 	char	*s0;
 	char	**ss;
 
+	get_texture(g, &g->sp_tex[0], "./sprites/cobra0.xpm");
+	get_texture(g, &g->sp_tex[1], "./sprites/cobra1.xpm");
+	get_texture(g, &g->sp_tex[2], "./sprites/cobra2.xpm");
+	get_texture(g, &g->sp_att[0], "./sprites/cobraatt0.xpm");
+	get_texture(g, &g->sp_att[1], "./sprites/cobraatt1.xpm");
+	get_texture(g, &g->sp_att[2], "./sprites/cobraatt2.xpm");
+	get_texture(g, &g->sp_hit[0], "./sprites/cobrahit0.xpm");
+	get_texture(g, &g->sp_hit[1], "./sprites/cobrahit1.xpm");
+	get_texture(g, &g->sp_hit[2], "./sprites/cobrahit2.xpm");
+	get_texture(g, &g->sp_hit[3], "./sprites/cobrahit3.xpm");
+	get_texture(g, &g->sp_hit[4], "./sprites/cobrahit4.xpm");
 	get_texture(g, &g->gun[0], "./guns/gun1a.xpm");
 	get_texture(g, &g->gun[1], "./guns/gun1b.xpm");
 	get_texture(g, &g->gun[2], "./guns/gun1c.xpm");

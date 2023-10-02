@@ -6,7 +6,7 @@
 /*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/09/25 21:31:47 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/02 09:38:17 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,19 +32,35 @@ int	end_game(t_game *g, int exit_code, char *s)
 			mlx_destroy_image(g->mlx.mlx, g->tex[i].img);
 	i = -1;
 	while (++i < 3)
+		if (g->sp_tex[i].img)
+			mlx_destroy_image(g->mlx.mlx, g->sp_tex[i].img);
+	i = -1;
+	while (++i < 3)
+		if (g->sp_att[i].img)
+			mlx_destroy_image(g->mlx.mlx, g->sp_att[i].img);
+	i = -1;
+	while (++i < 5)
+		if (g->sp_hit[i].img)
+			mlx_destroy_image(g->mlx.mlx, g->sp_hit[i].img);
+	i = -1;
+	while (++i < 3)
 		if (g->gun[i].img)
 			mlx_destroy_image(g->mlx.mlx, g->gun[i].img);
 	if (g->mlx.img)
 		mlx_destroy_image(g->mlx.mlx, g->mlx.img);
 	if (g->mlx.img_scale)
 		mlx_destroy_image(g->mlx.mlx, g->mlx.img_scale);
-	mlx_destroy_window(g->mlx.mlx, g->mlx.win);
-	mlx_destroy_display(g->mlx.mlx);
-	free(g->mlx.mlx);
-	free_map(&g->map);
+	if (g->mlx.mlx)
+	{
+		mlx_destroy_window(g->mlx.mlx, g->mlx.win);
+		mlx_destroy_display(g->mlx.mlx);
+		free(g->mlx.mlx);
+	}
+	if (g->map.h && g->map.l)
+		free_map(&g->map);
 	if (s)
-		perror(s);
-		//ft_putstr_fd(s, 2);
+		ft_putstr_fd(s, 2);
+		//perror(s);
 	if (g->ai0)
 		free(g->ai0);
 	if (g->cos_ai0)
@@ -57,6 +73,8 @@ int	end_game(t_game *g, int exit_code, char *s)
 		free_array(g->cos_ai, WIDTH);
 	if (g->sin_ai)
 		free_array(g->sin_ai, WIDTH);
+	if (g->n_sprites)
+		free(g->sprites);
 	exit(exit_code);
 	return (1);
 }
@@ -82,6 +100,16 @@ void	init(t_game *g)
 	i = -1;
 	while (++i < 3)
 		g->gun[i].img = 0;
+	i = -1;
+	while (++i < 3)
+		g->sp_tex[i].img = 0;
+	i = -1;
+	while (++i < 3)
+		g->sp_att[i].img = 0;
+	i = -1;
+	while (++i < 5)
+		g->sp_hit[i].img = 0;
+	g->mlx.mlx = 0;
 	g->mlx.img = 0;
 	g->mlx.img_scale = 0;
 	g->ai = 0;
@@ -90,10 +118,13 @@ void	init(t_game *g)
 	g->tan_ai = 0;
 	g->cos_ai = 0;
 	g->sin_ai = 0;
-	g->opened_door_x = 5;
-	g->opened_door_y = 4;
-	g->hidden_door = 20;
+	g->opened_door_x = 0;
+	g->opened_door_y = 0;
+	g->hidden_door = 0;
+	g->opened = 0;
 	g->gun_tex = &g->gun[0];
+	g->sprites = 0;
+	g->n_sprites = 0;
 }
 
 int	precalcul(t_game *g)
@@ -132,14 +163,28 @@ int	precalcul(t_game *g)
 	return (1);
 }
 
+void	equations2var(double a1, double b1, double c1, double a2, double b2, double c2)
+{
+	double detA = a1*b2 - b1*a2;
+	printf("detA = %f\n", detA);
+	double x = (b2 * c1 - b1 * c2) / detA;
+	double y = (c2 * a1 - c1 * a2) / detA;
+	printf("x = %f, y = %f\n", x, y);
+}
+
 int	main(int argc, char **argv)
 {
 	t_game	g;
 
 	(void) argc;
+	//equations2var(1, -2, -7, 3, 7, 5);
+	//equations2var(17, 4, 1110, 8, 2, 540);
 	init(&g);
 	if (!get_map(&g, argv[1]) || !precalcul(&g))
 		end_game(&g, EXIT_FAILURE, "Error map or memories\n");
+	//int	i = - 1;
+	//while (++i < g.n_sprites)
+	//	printf("%f %f\n", g.sprites[i].px, g.sprites[i].py);
 	g.mlx.mlx = mlx_init();
 	g.mlx.win = mlx_new_window(g.mlx.mlx, WIDTH * SCALE, HEIGHT * SCALE, "Cub3D");
 	if (!g.mlx.mlx || !g.mlx.win)

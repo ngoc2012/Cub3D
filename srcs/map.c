@@ -6,7 +6,7 @@
 /*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/09/26 10:10:50 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/01 10:41:34 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,29 @@ void	free_map(t_map *m)
 
 	i = -1;
 	while (++i < m->h)
-		free(m->v[i]);
+		if (m->v[i])
+			free(m->v[i]);
 	free(m->v);
+}
+
+void	add_sprite(double px, double py, t_game *g)
+{
+	int		i;
+	t_sprite	*new;
+
+	g->n_sprites++;
+	new = malloc(sizeof(t_sprite) * g->n_sprites);
+	i = 0;
+	while (i < g->n_sprites - 1)
+	{
+		new[i].px = g->sprites[i].px;
+		new[i].py = g->sprites[i].py;
+		i++;
+	}
+	new[i].px = px;
+	new[i].py = py;
+	free(g->sprites);
+	g->sprites = new;
 }
 
 static void	get_position(t_game *g, int i, int j, char c)
@@ -31,7 +52,7 @@ static void	get_position(t_game *g, int i, int j, char c)
 		g->map.v[j][i] = B_WALL;
 	else if (c == '2')
 	{
-		g->map.v[j][i] = B_SPRITE;
+		add_sprite(i * BOX_SIZE + BOX_SIZE / 2, j * BOX_SIZE + BOX_SIZE / 2, g);
 		g->map.v[j][i] = B_GROUND;
 	}
 	else if (c == '3')
@@ -51,7 +72,6 @@ static void	get_position(t_game *g, int i, int j, char c)
 		g->map.v[j][i] = B_GROUND;
 		g->pos.x = i;
 		g->pos.y = j;
-		printf("map x= %d, y = %d\n", g->pos.x, g->pos.y);
 		g->pos.px = i * BOX_SIZE + BOX_SIZE / 2;
 		g->pos.py = j * BOX_SIZE + BOX_SIZE / 2;
 		if (c == 'N')
@@ -67,6 +87,13 @@ static void	get_position(t_game *g, int i, int j, char c)
 
 int	check_map(char *s)
 {
+	char	*s0;
+
+	s0 = s;
+	while (ft_strchr(" 	\n", *s0))
+		s0++;
+	if (!*s0)
+		return (0);
 	while (*s)
 		if (!ft_strchr(MAP_CHAR, *(s++)))
 			return (0);
@@ -79,6 +106,7 @@ int	get_map(t_game *g, char *fn)
 	char	*s;
 	int	i;
 	int	j;
+	int	in_map;
 
 	fd = open(fn, O_RDONLY);
 	if (fd == -1)
@@ -99,13 +127,18 @@ int	get_map(t_game *g, char *fn)
 	g->map.ph = g->map.h * BOX_SIZE;
 	g->map.pl = g->map.l * BOX_SIZE;
 	g->map.v = malloc(sizeof(enum e_map *) * g->map.h);
+	i = -1;
+	while (++i < g->map.h)
+		g->map.v[i] = 0;
 	fd = open(fn, O_RDONLY);
 	j = -1;
+	in_map = 0;
 	s = get_next_line(fd);
 	while (s)
 	{
 		if (check_map(s))
 		{
+			in_map = 1;
 			g->map.v[++j] = malloc(sizeof(enum e_map) * g->map.l);
 			i = 0;
 			while (i < g->map.l)
@@ -116,11 +149,17 @@ int	get_map(t_game *g, char *fn)
 			while (i++ < g->map.l)
 				g->map.v[j][i++] = B_EMPTY;
 		}
+		else if (in_map)
+		{
+			free(s);
+			close(fd);
+			end_game(g, 1, "Invalid map\n");
+		}
 		free(s);
 		s = get_next_line(fd);
 	}
 	close(fd);
 	if (g->map.h < 5 || g->map.l < 5)
-		end_game(g, 1, "Invalid map");
+		end_game(g, 1, "Invalid map\n");
 	return (1);
 }

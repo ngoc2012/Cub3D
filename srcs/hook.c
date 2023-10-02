@@ -6,7 +6,7 @@
 /*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/09/26 10:02:11 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/09/26 17:20:48 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,29 +75,36 @@ int	key_press(int keycode, t_game *g)
 
 int	key_release(int keycode, t_game *g)
 {
-	if (keycode == XK_space)
+	if (keycode == XK_space && !g->frames[FR_DOOR])
 	{
 		if (g->map.v[g->pos.y - 1][g->pos.x] == B_DOOR)
 		{
 			g->opened_door_x = g->pos.x;
 			g->opened_door_y = g->pos.y - 1;
+			g->frames[FR_DOOR] = 1;
+			g->opened = 1;
 		}
 		else if (g->map.v[g->pos.y + 1][g->pos.x] == B_DOOR)
 		{
 			g->opened_door_x = g->pos.x;
 			g->opened_door_y = g->pos.y + 1;
+			g->frames[FR_DOOR] = 1;
+			g->opened = 1;
 		}
 		else if (g->map.v[g->pos.y][g->pos.x - 1] == B_DOOR)
 		{
 			g->opened_door_x = g->pos.x - 1;
 			g->opened_door_y = g->pos.y;
+			g->frames[FR_DOOR] = 1;
+			g->opened = 1;
 		}
 		else if (g->map.v[g->pos.y][g->pos.x + 1] == B_DOOR)
 		{
 			g->opened_door_x = g->pos.x + 1;
 			g->opened_door_y = g->pos.y;
+			g->frames[FR_DOOR] = 1;
+			g->opened = 1;
 		}
-		printf("x = %d, y = %d, d_x = %d, d_y = %d\n", g->pos.x, g->pos.y, g->opened_door_x, g->opened_door_y);
 	}
 	if (keycode == XK_Control_L || keycode == XK_Control_R)
 	{

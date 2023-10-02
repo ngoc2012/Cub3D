@@ -6,7 +6,7 @@
 /*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 09:21:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/09/26 10:50:16 by minh-ngu         ###   ########.fr       */
+/*   Updated: 2023/10/01 13:07:43 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@
 # define ROT_SPEED 0
 # define GUN_SPEED 2
 # define DOOR_SPEED 2
-# define DOOR_IDLE 2
+# define DOOR_IDLE 40
+# define SPRITE_IDLE 5
 # define PI 3.141592654
 # define INFINI INT_MAX
 # define COLOR_BOLD_SLOW_BLINKING      "\033[1;5m"
@@ -52,7 +53,7 @@
 # define COLOR_BOLD  "\033[1m"
 # define COLOR_OFF   "\033[m"
 # define N_TEX 11
-# define N_FRAMES 5
+# define N_FRAMES 6
 # define MAP_CHAR " \n0123456NSWEX"
 
 /*
@@ -70,7 +71,7 @@ D6: Decor 6 (6)
 */
 enum e_map {B_WALL, B_GROUND, B_EMPTY, B_DOOR, B_SPRITE, B_D3, B_D4, B_D5, B_D6};
 enum e_tex {NO, SO, WE, EA, DO, FL, CL, D3, D4, D5, D6};
-enum e_frame {FR_UP, FR_DOWN, FR_LEFT, FR_RIGHT, FR_GUN};
+enum e_frame {FR_UP, FR_DOWN, FR_LEFT, FR_RIGHT, FR_GUN, FR_DOOR};
 
 /*
 Map:
@@ -141,6 +142,17 @@ typedef struct s_tex {
 }	t_tex;
 
 /*
+Sprites
+*/
+typedef struct s_sprite {
+	double		px;
+	double		py;
+	unsigned char	health;
+	unsigned char	freeze;
+	t_tex	*tex;
+}	t_sprite;
+
+/*
 main:
 - dpp : distance to Projection Plan
 */
@@ -152,10 +164,16 @@ typedef struct s_game {
 	int		frames[N_FRAMES];
 	t_tex	tex[N_TEX];
 	t_tex	gun[3];
+	t_tex	sp_tex[3];
+	t_tex	sp_att[3];
+	t_tex	sp_hit[5];
 	t_tex	*gun_tex;
+	t_sprite	*sprites;
+	unsigned int	n_sprites;
 	int	opened_door_x;
 	int	opened_door_y;
 	int	hidden_door;
+	char	opened;
 	double	*ai0;
 	double	*cos_ai0;
 	double	**ai;
