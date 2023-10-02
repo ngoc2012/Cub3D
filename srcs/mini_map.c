@@ -6,7 +6,7 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 14:35:06 by nbechon           #+#    #+#             */
-/*   Updated: 2023/10/02 13:56:58 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/02 15:57:20 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static int	create_trgb(unsigned char t, unsigned char r,
 	return (t << 24 | r << 16 | g << 8 | b);
 }
 
-void	carrer_perso(int yp, int xp, int *addr)
+void	draw_hero(int yp, int xp, int *addr)
 {
 	int	i;
 	int	j;
@@ -55,24 +55,24 @@ void	wall(int *addr, int p, int k, int count)
 		while (v < l)
 		{
 			if (count == 1)
-				addr[(i + (p * h)) * WIDTH + (v + (k * l))] = create_trgb(1, 0, 255, 255);
+				addr[(i + (p * h)) * WIDTH + (v + (k * l))] = create_trgb(1,
+						0, 255, 255);
 			if (count == 0)
-				addr[(i + (p * h)) * WIDTH + (v + (k * l))] = create_trgb(1, 255, 255, 255);
+				addr[(i + (p * h)) * WIDTH + (v + (k * l))] = create_trgb(1,
+						255, 255, 255);
 			v++;
 		}
 		i++;
 	}
 }
 
-void	draw_hero(t_game *g, int l, int h)
+void	draw_hero_and_wall(t_game *g, int l, int h, int *addr)
 {
-	int		*addr;
 	int		i;
 	int		j;
 	int		k;
 	int		p;
 
-	addr = (int *)g->mlx.addr;
 	i = g->pos.y - 4;
 	p = 0;
 	while (i <= g->pos.y + 4)
@@ -93,68 +93,32 @@ void	draw_hero(t_game *g, int l, int h)
 		i++;
 		p++;
 	}
-	carrer_perso(h / 2, l / 2, addr);
+	draw_hero(h / 2, l / 2, addr);
 }
 
-// void	draw_l(int h, int l, int *addr)
-// {
-// 	int	i;
-// 	int	j;
-
-// 	i = 0;
-// 	j = 0;
-// 	while (j <= h)
-// 	{
-// 		i = 0;
-// 		while (i < l - 6)
-// 		{
-// 			addr[j * WIDTH + i] = create_trgb(1, 255, 0, 255);
-// 			i++;
-// 		}
-// 		j += (h / 9);
-// 	}
-// }
-
-// void	draw_h(int h, int l, int *addr, int count)
-// {
-// 	int	i;
-// 	int	j;
-
-// 	i = 0;
-// 	j = 0;
-// 	while (j <= h)
-// 	{
-// 		i = 0;
-// 		while (i < l - 6)
-// 		{
-// 			if (count == 1)
-// 				addr[j * WIDTH + i] = create_trgb(1, 255, 0, 255);
-// 			else
-// 				addr[i * WIDTH + j] = create_trgb(1, 255, 0, 255);
-// 			i++;
-// 		}
-// 		j += (h / 9);
-// 	}
-// }
-
-void	draw_square(t_game *g, int x, int y, int l, int h)
+draw_life(int *addr, int l)
 {
-	int	xp;
-	int	yp;
-	int	*addr;
+	int	i;
+	int	j;
 
-	addr = (int *)g->mlx.addr;
-	// draw_l(h, l, addr);
-	// draw_h(l, h, addr);
-	draw_hero(g, l, h);
+	i = 1;
+	while (i < 25)
+	{
+		j = 6;
+		while (j < l)
+		{
+			addr[(HEIGHT - 30 + i) * WIDTH + (WIDTH - j)] = create_trgb(1, 255, 0, 0);
+			j++;
+		}
+		i++;
+	}
 }
 
 void	draw_mini_map(t_game *g)
 {
-	int	xmap;
-	int	ymap;
+	int	*addr;
 
-	xmap = WIDTH / 4;
-	ymap = HEIGHT / 4;
-	draw_square(g, 0, 0, xmap, ymap);
+	addr = (int *)g->mlx.addr;
+	draw_hero_and_wall(g, WIDTH / 4, HEIGHT / 4, addr);
+	draw_life(addr, WIDTH / 3);
 }
