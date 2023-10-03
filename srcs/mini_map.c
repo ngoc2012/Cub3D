@@ -6,7 +6,7 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 14:35:06 by nbechon           #+#    #+#             */
-/*   Updated: 2023/10/02 15:57:20 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/03 15:03:07 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,17 +100,26 @@ draw_life(int *addr, int l)
 {
 	int	i;
 	int	j;
+	int	count;
+	int	n;
 
-	i = 1;
-	while (i < 25)
+	count = 0;
+	n = 0;
+	while (count < 3)
 	{
-		j = 6;
-		while (j < l)
+		i = 1;
+		while (i < 25)
 		{
-			addr[(HEIGHT - 30 + i) * WIDTH + (WIDTH - j)] = create_trgb(1, 255, 0, 0);
-			j++;
+			j = 6;
+			while (j < 20)
+			{
+				addr[(HEIGHT - 30 + i) * WIDTH + (WIDTH - j - n)] = create_trgb(255, 255, 0, 0);
+				j++;
+			}
+			i++;
 		}
-		i++;
+		n += 20;
+		count++;
 	}
 }
 
