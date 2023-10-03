@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/01 10:41:34 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/03 15:56:06 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ int	check_map(char *s)
 
 int	get_map(t_game *g, char *fn)
 {
+	int	count_perso;
 	int	fd;
 	char	*s;
 	int	i;
@@ -117,7 +118,7 @@ int	get_map(t_game *g, char *fn)
 		if (check_map(s))
 		{
 			g->map.h++;
-			if ((int) ft_strlen(s) - 1> g->map.l)
+			if ((int) ft_strlen(s) - 1 > g->map.l)
 				g->map.l = (int) ft_strlen(s) - 1;
 		}
 		free(s);
@@ -134,6 +135,7 @@ int	get_map(t_game *g, char *fn)
 	j = -1;
 	in_map = 0;
 	s = get_next_line(fd);
+	count_perso = 0;
 	while (s)
 	{
 		if (check_map(s))
@@ -145,7 +147,11 @@ int	get_map(t_game *g, char *fn)
 				g->map.v[j][i++] = B_EMPTY;
 			i = -1;
 			while (s[++i])
+			{
+				if (s[i] == 'N' || s[i] == 'W' || s[i] == 'E' || s[i] == 'S')
+					count_perso++;
 				get_position(g, i, j, s[i]);
+			}
 			while (i++ < g->map.l)
 				g->map.v[j][i++] = B_EMPTY;
 		}
@@ -158,6 +164,8 @@ int	get_map(t_game *g, char *fn)
 		free(s);
 		s = get_next_line(fd);
 	}
+	if (count_perso == 0 || count_perso > 1)
+		end_game(g, 1, "Invalid map\n");
 	close(fd);
 	if (g->map.h < 5 || g->map.l < 5)
 		end_game(g, 1, "Invalid map\n");
