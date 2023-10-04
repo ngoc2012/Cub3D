@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3D.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 09:21:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/03 15:09:58 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/04 13:27:49 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@
 # define DOOR_SPEED 2
 # define DOOR_IDLE 40
 # define SPRITE_IDLE 5
+# define SPRITE_STATE 3
+# define HEALTH_SPRITE 2
 # define PI 3.141592654
 # define INFINI INT_MAX
 # define COLOR_BOLD_SLOW_BLINKING      "\033[1;5m"
@@ -53,7 +55,7 @@
 # define COLOR_BOLD  "\033[1m"
 # define COLOR_OFF   "\033[m"
 # define N_TEX 11
-# define N_FRAMES 6
+# define N_FRAMES 8
 # define MAP_CHAR " \n0123456NSWEX"
 
 /*
@@ -71,7 +73,7 @@ D6: Decor 6 (6)
 */
 enum e_map {B_WALL, B_GROUND, B_EMPTY, B_DOOR, B_SPRITE, B_D3, B_D4, B_D5, B_D6};
 enum e_tex {NO, SO, WE, EA, DO, FL, CL, D3, D4, D5, D6};
-enum e_frame {FR_UP, FR_DOWN, FR_LEFT, FR_RIGHT, FR_GUN, FR_DOOR};
+enum e_frame {FR_UP, FR_DOWN, FR_LEFT, FR_RIGHT, FR_ROT_L, FR_ROT_R, FR_GUN, FR_DOOR};
 
 /*
 Map:
@@ -98,8 +100,8 @@ Player position
 typedef struct s_pos {
 	int		x;
 	int		y;
-	double		px;
-	double		py;
+	float		px;
+	float		py;
 	int		rot;
 	int		Ax;
 	int		Ay;
@@ -141,16 +143,42 @@ typedef struct s_tex {
 	char	*addr;
 }	t_tex;
 
+enum e_sprite {NORMAL, FIRE, FREEZE, DIE};
 /*
 Sprites
+- dd: distance to character
 */
 typedef struct s_sprite {
-	double		px;
-	double		py;
+	enum e_map	type;
+	float		px;
+	float		py;
+	float		dd;
 	unsigned char	health;
-	unsigned char	freeze;
+	unsigned char	i_tex;
+	enum e_sprite	state;
 	t_tex	*tex;
 }	t_sprite;
+
+/*
+Equations:
+a1 * x + b1 * y = c1
+a2 * x + b2 * y = c2
+*/
+typedef struct s_equa2	t_equa2;
+
+struct s_equa2 {
+	float	det;
+	float	a1;
+	float	b1;
+	float	c1;
+	float	a2;
+	float	b2;
+	float	c2;
+	float	x;
+	float	y;
+	void	(*getDet)(t_equa2 *);
+	void	(*getXY)(t_equa2 *);
+};
 
 /*
 main:
@@ -174,12 +202,16 @@ typedef struct s_game {
 	int	opened_door_y;
 	int	hidden_door;
 	char	opened;
-	double	*ai0;
-	double	*cos_ai0;
-	double	**ai;
-	double	**tan_ai;
-	double	**cos_ai;
-	double	**sin_ai;
+	float	*ai0;
+	float	*cos_ai0;
+	float	**ai;
+	float	**tan_ai;
+	float	**cos_ai;
+	float	**sin_ai;
+	float	*cos_a1;
+	float	*sin_a1;
+	float	*a1;
+	t_equa2	eq;
 }	t_game;
 
 void	free_map(t_map *m);
@@ -188,7 +220,7 @@ int	draw(t_game *g);
 int	key_hook(int keycode, t_game *g);
 int	end_game(t_game *g, int exit_code, char *s);
 void	draw_mini_map(t_game *g);
-double	angle_convert(double a);
+float	angle_convert(double a);
 void	redraw(t_game *g);
 int	get_textures(t_game *g, char *fn);
 void	render_object(t_tex *t, int *bg, int x0, int y0);
@@ -197,5 +229,6 @@ void	scale_window(t_game *g);
 int	key_press(int keycode, t_game *g);
 int	key_release(int keycode, t_game *g);
 int	mouse_hook(int button, int x, int y, t_game *g);
+void	sort_sprites(t_game *g);
 
 #endif

@@ -1,4 +1,4 @@
-double	angle_convert(double a)
+float	angle_convert(double a)
 {
 	while (a > 180.0 || a <= -180.0)
 	{

@@ -6,19 +6,20 @@
 /*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/02 09:38:17 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/04 13:27:49 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
-void	free_array(double **a, int size)
+void	free_array(float **a, int size)
 {
 	int	i;
 
 	i = -1;
 	while (++i < size)
-		free(a[i]);
+		if (a[i])
+			free(a[i]);
 	free(a);
 }
 
@@ -73,10 +74,28 @@ int	end_game(t_game *g, int exit_code, char *s)
 		free_array(g->cos_ai, WIDTH);
 	if (g->sin_ai)
 		free_array(g->sin_ai, WIDTH);
+	if (g->cos_a1)
+		free(g->cos_a1);
+	if (g->sin_a1)
+		free(g->sin_a1);
+	if (g->a1)
+		free(g->a1);
 	if (g->n_sprites)
 		free(g->sprites);
 	exit(exit_code);
 	return (1);
+}
+
+void	getDet(t_equa2 *e)
+{
+	e->det = e->a1 * e->b2 - e->b1 * e->a2;
+}
+
+void	getXY(t_equa2 *e)
+{
+	e->getDet(e);
+	e->x = (e->b2 * e->c1 - e->b1 * e->c2) / e->det;
+	e->y = (e->c2 * e->a1 - e->c1 * e->a2) / e->det;
 }
 
 void	init(t_game *g)
@@ -118,6 +137,9 @@ void	init(t_game *g)
 	g->tan_ai = 0;
 	g->cos_ai = 0;
 	g->sin_ai = 0;
+	g->cos_a1 = 0;
+	g->sin_a1 = 0;
+	g->a1 = 0;
 	g->opened_door_x = 0;
 	g->opened_door_y = 0;
 	g->hidden_door = 0;
@@ -125,30 +147,35 @@ void	init(t_game *g)
 	g->gun_tex = &g->gun[0];
 	g->sprites = 0;
 	g->n_sprites = 0;
+	g->eq.getDet = getDet;
+	g->eq.getXY = getXY;
 }
 
 int	precalcul(t_game *g)
 {
 	int		i;
 	int		j;
-	double	Xp;
+	float	Xp;
 
-	g->ai0 = malloc(sizeof(double) * WIDTH);
-	g->cos_ai0 = malloc(sizeof(double) * WIDTH);
-	g->ai = malloc(sizeof(double *) * WIDTH);
-	g->tan_ai = malloc(sizeof(double *) * WIDTH);
-	g->cos_ai = malloc(sizeof(double *) * WIDTH);
-	g->sin_ai = malloc(sizeof(double *) * WIDTH);
+	g->ai0 = malloc(sizeof(float) * WIDTH);
+	g->cos_ai0 = malloc(sizeof(float) * WIDTH);
+	g->ai = ft_calloc(sizeof(float *), WIDTH);
+	g->tan_ai = ft_calloc(sizeof(float *), WIDTH);
+	g->cos_ai = ft_calloc(sizeof(float *), WIDTH);
+	g->sin_ai = ft_calloc(sizeof(float *), WIDTH);
+	g->a1 = malloc(sizeof(float) * 360.0 / ROT_STEP);
+	g->sin_a1 = malloc(sizeof(float) * 360.0 / ROT_STEP);
+	g->cos_a1 = malloc(sizeof(float) * 360.0 / ROT_STEP);
 	i = -1;
 	while (++i < WIDTH)
 	{
 		Xp = WIDTH / 2 - i + 0.5;
 		g->ai0[i] = atan(Xp / g->dpp) * 180.0 / PI; 
 		g->cos_ai0[i] = 1 / cos(g->ai0[i] * PI /180.0); 
-		g->ai[i] = malloc(sizeof(double) * 360.0 / ROT_STEP);
-		g->tan_ai[i] = malloc(sizeof(double) * 360.0 / ROT_STEP);
-		g->cos_ai[i] = malloc(sizeof(double) * 360.0 / ROT_STEP);
-		g->sin_ai[i] = malloc(sizeof(double) * 360.0 / ROT_STEP);
+		g->ai[i] = malloc(sizeof(float) * 360.0 / ROT_STEP);
+		g->tan_ai[i] = malloc(sizeof(float) * 360.0 / ROT_STEP);
+		g->cos_ai[i] = malloc(sizeof(float) * 360.0 / ROT_STEP);
+		g->sin_ai[i] = malloc(sizeof(float) * 360.0 / ROT_STEP);
 		j = -1;
 		while (++j < 360 / ROT_STEP)
 		{
@@ -158,18 +185,42 @@ int	precalcul(t_game *g)
 			g->sin_ai[i][j] = sin(g->ai[i][j] * PI / 180.0);
 		}
 	}
-	//ai = g->pos.alpha + ai0;
-	//ai = angle_convert(ai);
+	j = -1;
+	while (++j < 360 / ROT_STEP)
+	{
+		g->a1[j] = angle_convert(j * ROT_STEP);
+		g->sin_a1[j] = sin(g->a1[j] * PI / 180.0);
+		g->cos_a1[j] = cos(g->a1[j] * PI / 180.0);
+	}
 	return (1);
 }
 
-void	equations2var(double a1, double b1, double c1, double a2, double b2, double c2)
+void	sort_sprites(t_game *g)
 {
-	double detA = a1*b2 - b1*a2;
-	printf("detA = %f\n", detA);
-	double x = (b2 * c1 - b1 * c2) / detA;
-	double y = (c2 * a1 - c1 * a2) / detA;
-	printf("x = %f, y = %f\n", x, y);
+	int	i;
+	int	j;
+	float	dx, dy;
+	t_sprite	sp;
+
+	i = -1;
+	while (++i < g->n_sprites)
+	{
+		dx = g->sprites[i].px - g->pos.px;
+		dy = g->sprites[i].py - g->pos.py;
+		g->sprites[i].dd = dx * dx + dy *dy;
+	}
+	i = -1;
+	while (++i < g->n_sprites - 1)
+	{
+		j = i;
+		while (++j < g->n_sprites)
+			if (g->sprites[i].dd < g->sprites[j].dd)
+			{
+				sp = g->sprites[i];
+				g->sprites[i] = g->sprites[j];
+				g->sprites[j] = sp;
+			}
+	}
 }
 
 int	main(int argc, char **argv)
@@ -177,14 +228,11 @@ int	main(int argc, char **argv)
 	t_game	g;
 
 	(void) argc;
-	//equations2var(1, -2, -7, 3, 7, 5);
-	//equations2var(17, 4, 1110, 8, 2, 540);
+
 	init(&g);
 	if (!get_map(&g, argv[1]) || !precalcul(&g))
 		end_game(&g, EXIT_FAILURE, "Error map or memories\n");
-	//int	i = - 1;
-	//while (++i < g.n_sprites)
-	//	printf("%f %f\n", g.sprites[i].px, g.sprites[i].py);
+	sort_sprites(&g);
 	g.mlx.mlx = mlx_init();
 	g.mlx.win = mlx_new_window(g.mlx.mlx, WIDTH * SCALE, HEIGHT * SCALE, "Cub3D");
 	if (!g.mlx.mlx || !g.mlx.win)
@@ -195,11 +243,24 @@ int	main(int argc, char **argv)
 	g.mlx.addr_scale = mlx_get_data_addr(g.mlx.img_scale, &g.mlx.bpp, &g.mlx.ll, &g.mlx.ed);
 	if (!get_textures(&g, argv[1]))
 		end_game(&g, EXIT_FAILURE, "Error textures load\n");
+	int	i = -1;
+	while (++i < g.n_sprites)
+	{
+		if (g.sprites[i].type == B_D3)
+			g.sprites[i].tex = &g.tex[D3];
+		else if (g.sprites[i].type == B_D4)
+			g.sprites[i].tex = &g.tex[D4];
+		else if (g.sprites[i].type == B_D5)
+			g.sprites[i].tex = &g.tex[D5];
+		else if (g.sprites[i].type == B_D6)
+			g.sprites[i].tex = &g.tex[D6];
+	}
 	//mlx_key_hook(g.mlx.win, key_hook, &g);
 	mlx_mouse_hook(g.mlx.win, mouse_hook, &g);
 	mlx_hook(g.mlx.win, 2, KeyPressMask, &key_press, &g);
 	mlx_hook(g.mlx.win, 3, KeyReleaseMask, &key_release, &g);
 	mlx_hook(g.mlx.win, ClientMessage, LeaveWindowMask, &end_game, &g);
 	mlx_loop_hook(g.mlx.mlx, &draw, &g);
+	//draw(&g);
 	mlx_loop(g.mlx.mlx);
 }

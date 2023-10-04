@@ -6,7 +6,7 @@
 /*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/01 13:08:07 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/04 13:27:49 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,9 @@ void	render_object(t_tex *t, int *bg, int x0, int y0)
 		x = -1;
 		while (++x < t->l)
 		{
-			if (*((int*) t->addr + x + y * t->l) > 0)
-				*((int*) bg + x + x0 + (y + y0) * WIDTH) = *((int*) t->addr + x + y * t->l);
+			int	color = *((int*) t->addr + x + y * t->l);
+			if (color > 0)
+				*((int*) bg + x + x0 + (y + y0) * WIDTH) = color;
 		}
 	}
 }
@@ -56,21 +57,21 @@ void	render_object(t_tex *t, int *bg, int x0, int y0)
 void	render_backgroud(t_game *g)
 {
 	int	ix;
-	double	ai;
-	double	Apx;
-	double	Apy;
+	float	ai;
+	float	Apx;
+	float	Apy;
 	int	Ax;
 	int	Ay;
-	double	Bpx;
-	double	Bpy;
+	float	Bpx;
+	float	Bpy;
 	int	Bx;
 	int	By;
-	double	dpx;
-	double	dpy;
-	double	dA;
-	double	dB;
-	double	tol_h;
-	double	tol_l;
+	float	dpx;
+	float	dpy;
+	float	dA;
+	float	dB;
+	float	tol_h;
+	float	tol_l;
 	int	*addr;
 	int	*addr_t;
 	int	*addr_f;
@@ -85,8 +86,8 @@ void	render_backgroud(t_game *g)
 	g->pos.Bx = -1;
 	g->pos.By = -1;
 	// Angle tolerance 1 pixel / size
-	tol_h= 1.0 / (double) g->map.h / BOX_SIZE;
-	tol_l = 1.0 / (double) g->map.l / BOX_SIZE;
+	tol_h= 1.0 / (float) g->map.h / BOX_SIZE;
+	tol_l = 1.0 / (float) g->map.l / BOX_SIZE;
 	ix = -1;
 	while (++ix < WIDTH)
 	{
@@ -114,7 +115,7 @@ void	render_backgroud(t_game *g)
 			else
 				Bx = Bpx / BOX_SIZE - 1;
 			By = g->pos.y;
-			door_coor = (int) (Bpy + dpy / 2 - BOX_SIZE * (double) By);
+			door_coor = (int) (Bpy + dpy / 2 - BOX_SIZE * (float) By);
 			while ((g->map.v[By][Bx] != B_WALL && g->map.v[By][Bx] != B_DOOR)
 				|| (By == g->opened_door_y && Bx == g->opened_door_x && g->map.v[By][Bx] == B_DOOR && door_coor < g->hidden_door))
 			{
@@ -125,7 +126,7 @@ void	render_backgroud(t_game *g)
 				else
 					Bx = Bpx / BOX_SIZE - 1;
 				if (g->map.v[By][Bx] == B_DOOR)
-					door_coor = (int) (Bpy + dpy / 2 - BOX_SIZE * (double) By);
+					door_coor = (int) (Bpy + dpy / 2 - BOX_SIZE * (float) By);
 			}
 			dA = INFINI;
 			if (g->map.v[By][Bx] == B_DOOR && ai < tol_l && ai > -tol_l)
@@ -164,7 +165,7 @@ void	render_backgroud(t_game *g)
 			else
 				Ay = Apy / BOX_SIZE;
 			Ax = g->pos.x;
-			door_coor = (int) (Apx + dpx / 2 - BOX_SIZE * (double) Ax);
+			door_coor = (int) (Apx + dpx / 2 - BOX_SIZE * (float) Ax);
 			while ((g->map.v[Ay][Ax] != B_WALL && g->map.v[Ay][Ax] != B_DOOR)
 				|| (Ay == g->opened_door_y && Ax == g->opened_door_x && g->map.v[Ay][Ax] == B_DOOR && door_coor < g->hidden_door))
 			{
@@ -174,7 +175,7 @@ void	render_backgroud(t_game *g)
 					Ay = Apy / BOX_SIZE - 1;
 				else
 					Ay = Apy / BOX_SIZE;
-				door_coor = (int) (Apx + dpx / 2 - BOX_SIZE * (double) Ax);
+				door_coor = (int) (Apx + dpx / 2 - BOX_SIZE * (float) Ax);
 			}
 			if (g->map.v[Ay][Ax] == B_DOOR && ai > 0.0)
 			{
@@ -219,7 +220,7 @@ void	render_backgroud(t_game *g)
 					Ay = Apy / BOX_SIZE - 1;
 				else
 					Ay = Apy / BOX_SIZE;
-				door_coor = (int) (Apx + dpx / 2 - BOX_SIZE * (double) Ax);
+				door_coor = (int) (Apx + dpx / 2 - BOX_SIZE * (float) Ax);
 				while ((Apx >= 0 && Apx < g->map.pl) &&
 					((g->map.v[Ay][Ax] != B_WALL && g->map.v[Ay][Ax] != B_DOOR)
 					|| (Ay == g->opened_door_y && Ax == g->opened_door_x && g->map.v[Ay][Ax] == B_DOOR && door_coor < g->hidden_door)))
@@ -231,7 +232,7 @@ void	render_backgroud(t_game *g)
 						Ay = Apy / BOX_SIZE - 1;
 					else
 						Ay = Apy / BOX_SIZE;
-					door_coor = (int) (Apx + dpx / 2 - BOX_SIZE * (double) Ax);
+					door_coor = (int) (Apx + dpx / 2 - BOX_SIZE * (float) Ax);
 				}
 				if (Apx < 0 || Apx >= g->map.pl)
 					dA = INFINI;
@@ -277,7 +278,7 @@ void	render_backgroud(t_game *g)
 				else
 					Bx = Bpx / BOX_SIZE - 1;
 				By = Bpy / BOX_SIZE;
-				door_coor = (int) (Bpy + dpy / 2 - BOX_SIZE * (double) By);
+				door_coor = (int) (Bpy + dpy / 2 - BOX_SIZE * (float) By);
 				while ((Bpy >= 0 && Bpy < g->map.ph) &&
 					((g->map.v[By][Bx] != B_WALL && g->map.v[By][Bx] != B_DOOR)
 				|| (By == g->opened_door_y && Bx == g->opened_door_x && g->map.v[By][Bx] == B_DOOR && door_coor < g->hidden_door)))
@@ -289,7 +290,7 @@ void	render_backgroud(t_game *g)
 					else
 						Bx = Bpx / BOX_SIZE - 1;
 					By = Bpy / BOX_SIZE;
-					door_coor = (int) (Bpy + dpy / 2 - BOX_SIZE * (double) By);
+					door_coor = (int) (Bpy + dpy / 2 - BOX_SIZE * (float) By);
 				}
 				if (Bpy < 0 || Bpy >= g->map.ph)
 					dB = INFINI;
@@ -315,13 +316,13 @@ void	render_backgroud(t_game *g)
 		int	tx;
 		int	ty;
 		int	h_slide;
-		double	h;
-		double	p;
-		double	d;
+		float	h;
+		float	p;
+		float	d;
 		if (dA > dB)
 		{
 			d = dB / g->cos_ai0[ix];
-			tx = (int) (Bpy - BOX_SIZE * (double) By);
+			tx = (int) (Bpy - BOX_SIZE * (float) By);
 			if (g->map.v[By][Bx] == B_DOOR)
 			{
 				if (By == g->opened_door_y && Bx == g->opened_door_x)
@@ -336,7 +337,7 @@ void	render_backgroud(t_game *g)
 		else
 		{
 			d = dA / g->cos_ai0[ix];
-			tx = (int) (Apx - BOX_SIZE * (double) Ax);
+			tx = (int) (Apx - BOX_SIZE * (float) Ax);
 			if (g->map.v[Ay][Ax] == B_DOOR)
 			{
 				if (Ay == g->opened_door_y && Ax == g->opened_door_x)
@@ -350,16 +351,6 @@ void	render_backgroud(t_game *g)
 		}
 		if (d < 0)
 			d = -d;
-		// sprite
-		int	i = -1;
-		while (++i < g->n_sprites)
-		{
-			double	dpx = g->sprites[i].px - g->pos.px;
-			double	dpy = g->sprites[i].py - g->pos.py;
-			if (d * d > dpx * dpx + dpy * dpy) 
-			{
-			}
-		}
 		h = BOX_SIZE / d * g->dpp;
 		p = 1.0 / d * g->dpp;
 		h_slide = (int) (BOX_SIZE / d * g->dpp);
@@ -370,11 +361,11 @@ void	render_backgroud(t_game *g)
 		addr_t = (int *)tex->addr;
 		addr += ix;
 		int	start = HEIGHT / 2 - h_slide / 2;
-		double	dh;
+		float	dh;
 		int	xh;
 		int	yh;
-		double	xph;
-		double	yph;
+		float	xph;
+		float	yph;
 		yp = -1;
 		while (++yp < start)
 		{
@@ -395,7 +386,7 @@ void	render_backgroud(t_game *g)
 			yp = -1;
 			while (++yp < h_slide)
 			{
-				ty = (int) (((h - (double) h_slide) / 2.0 + (double) yp) / p);
+				ty = (int) (((h - (float) h_slide) / 2.0 + (double) yp) / p);
 				if (ty < BOX_SIZE && ty >= 0)
 					*addr = *(addr_t + tx + ty * tex->l);
 				addr += WIDTH;
@@ -414,6 +405,84 @@ void	render_backgroud(t_game *g)
 			if (xh < BOX_SIZE && xh >= 0 && yh < BOX_SIZE && yh >= 0)
 				*addr = *(addr_f + xh + yh * g->tex[FL].l);
 			addr += WIDTH;
+		}
+
+		// sprite
+		float	dsp;
+		int	i = -1;
+		while (++i < g->n_sprites)
+		{
+			tex = g->sprites[i].tex;
+			//tex = &g->sp_tex[0];
+			addr_t = (int *)tex->addr;
+			if (g->cos_a1[g->pos.rot] * (g->sprites[i].px - g->pos.px) - g->sin_a1[g->pos.rot] * (g->sprites[i].py - g->pos.py) >= 0)
+			{
+				g->eq.a1 =  g->cos_a1[g->pos.rot];
+				g->eq.b1 = -g->sin_a1[g->pos.rot];
+				g->eq.c1 = g->eq.a1 * g->sprites[i].px + g->eq.b1 * g->sprites[i].py;
+				g->eq.a2 = -g->sin_ai[ix][g->pos.rot];
+				g->eq.b2 = -g->cos_ai[ix][g->pos.rot];
+				g->eq.c2 = g->eq.a2 * g->pos.px + g->eq.b2 * g->pos.py;
+				g->eq.det = 1.0;
+				g->eq.getXY(&g->eq);
+				float	start_x = g->sprites[i].px - tex->l / 2 * g->sin_a1[g->pos.rot];
+				float	start_y = g->sprites[i].py - tex->l / 2 * g->cos_a1[g->pos.rot];
+				float	end_x = start_x + tex->l * g->sin_a1[g->pos.rot];
+				float	end_y = start_y + tex->l * g->cos_a1[g->pos.rot];
+				if ((start_x - g->eq.x) * (end_x - g->eq.x) + (start_y - g->eq.y) * (end_y - g->eq.y) <= 0)
+				{
+					if ((45.0 < ai && ai < 135.0) || (-135.0 < ai && ai < -45.0))
+						dsp = (g->eq.x - g->pos.px) / g->cos_ai[ix][g->pos.rot];
+					else
+						dsp = (g->eq.y - g->pos.py) / g->sin_ai[ix][g->pos.rot];
+					if (dsp < 0)
+						dsp = -dsp;
+					dsp /= g->cos_ai0[ix];
+					if (dsp < d)
+					{
+						if ((45.0 < g->a1[g->pos.rot] && g->a1[g->pos.rot] < 135.0) ||
+							(-135.0 < g->a1[g->pos.rot] && g->a1[g->pos.rot] < -45.0))
+							tx = (int) ((g->eq.x - start_x + 0.5) / (end_x - start_x) * (float) tex->l) - 1;
+						else
+							tx = (int) ((g->eq.y - start_y + 0.5) / (end_y - start_y) * (float) tex->l) - 1;
+						//	tx = (int) ((g->eq.x - start_x) / (end_x - start_x) * (float) tex->l);
+						//else
+						//	tx = (int) ((g->eq.y - start_y) / (end_y - start_y) * (float) tex->l);
+						if (tx < 0)
+							tx = 0;
+						//if (tx > tex->l - 1)
+						//	tx = tex->l - 1;
+						h = tex->h / dsp * g->dpp;
+						p = 1.0 / dsp * g->dpp;
+						int	h_slide0 = (int) (BOX_SIZE / dsp * g->dpp);
+						h_slide = (int) (tex->h / dsp * g->dpp);
+						if (h_slide > HEIGHT)
+							h_slide = HEIGHT;
+						int	start = HEIGHT / 2 + h_slide0 / 2 - h_slide;
+						if (start < 0)
+							start = 0;
+						if (start > HEIGHT - 1)
+							start = HEIGHT - 1;
+						addr = (int *)g->mlx.addr;
+						addr += ix + start * WIDTH;
+						yp = -1;
+						while (++yp < h_slide)
+						{
+							ty = (int) (((h - (float) h_slide) / 2.0 + (double) yp + 0.5) / p - 1);
+							//ty = (int) (((h - (float) h_slide) / 2.0 + (double) yp) / p);
+							if (ty < 0)
+								ty = 0;
+							//if (ty > tex->h - 1)
+							//	ty = tex->h - 1;
+							int	color;
+							color = *(addr_t + tx + ty * tex->l);
+							if (color > 0)
+								*addr = color;
+							addr += WIDTH;
+						}
+					}
+				}
+			}
 		}
 	}
 }
@@ -495,10 +564,14 @@ int	draw(t_game *g)
 		g->frames[FR_UP] = 0;
 	if (g->frames[FR_DOWN] > TRANS_SPEED)
 		g->frames[FR_DOWN] = 0;
-	if (g->frames[FR_RIGHT] > ROT_SPEED)
-		g->frames[FR_RIGHT] = 0;
-	if (g->frames[FR_LEFT] > ROT_SPEED)
+	if (g->frames[FR_LEFT] > TRANS_SPEED)
 		g->frames[FR_LEFT] = 0;
+	if (g->frames[FR_RIGHT] > TRANS_SPEED)
+		g->frames[FR_RIGHT] = 0;
+	if (g->frames[FR_ROT_R] > ROT_SPEED)
+		g->frames[FR_ROT_R] = 0;
+	if (g->frames[FR_ROT_L] > ROT_SPEED)
+		g->frames[FR_ROT_L] = 0;
 	if (g->frames[FR_GUN] > GUN_SPEED)
 		g->frames[FR_GUN] = 0;
 	if (g->frames[FR_GUN] == 1)
@@ -511,6 +584,23 @@ int	draw(t_game *g)
 	while (++i < N_FRAMES)
 		if (i != FR_DOOR && g->frames[i])
 			g->frames[i]++;
+	i = -1;
+	while (++i < g->n_sprites)
+	{
+		if (g->sprites[i].type == B_SPRITE)
+		{
+			if (g->sprites[i].state == NORMAL)
+			{
+				g->sprites[i].tex = &g->sp_tex[g->sprites[i].i_tex / SPRITE_STATE];
+				g->sprites[i].i_tex++;
+				if (g->sprites[i].i_tex == (SPRITE_STATE * 3))
+					g->sprites[i].i_tex = 0;
+			}
+			else
+				g->sprites[i].tex = &g->sp_tex[0];
+		}
+
+	}
 	render_backgroud(g);
 	render_object(g->gun_tex, (int *) g->mlx.addr, WIDTH / 2, HEIGHT);
 	draw_mini_map(g);

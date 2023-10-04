@@ -6,7 +6,7 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/03 15:56:06 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/04 13:27:49 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	free_map(t_map *m)
 	free(m->v);
 }
 
-void	add_sprite(double px, double py, t_game *g)
+void	add_sprite(float px, double py, enum e_map type, t_game *g)
 {
 	int		i;
 	t_sprite	*new;
@@ -34,12 +34,20 @@ void	add_sprite(double px, double py, t_game *g)
 	i = 0;
 	while (i < g->n_sprites - 1)
 	{
+		new[i].type = g->sprites[i].type;
 		new[i].px = g->sprites[i].px;
 		new[i].py = g->sprites[i].py;
+		new[i].health = g->sprites[i].health;
+		new[i].i_tex = g->sprites[i].i_tex;
+		new[i].state = g->sprites[i].state;
 		i++;
 	}
+	new[i].type = type;
 	new[i].px = px;
 	new[i].py = py;
+	new[i].health = HEALTH_SPRITE;
+	new[i].i_tex = rand() % (SPRITE_STATE * 3);
+	new[i].state = NORMAL;
 	free(g->sprites);
 	g->sprites = new;
 }
@@ -52,17 +60,29 @@ static void	get_position(t_game *g, int i, int j, char c)
 		g->map.v[j][i] = B_WALL;
 	else if (c == '2')
 	{
-		add_sprite(i * BOX_SIZE + BOX_SIZE / 2, j * BOX_SIZE + BOX_SIZE / 2, g);
+		add_sprite(i * BOX_SIZE + BOX_SIZE / 2, j * BOX_SIZE + BOX_SIZE / 2, B_SPRITE, g);
 		g->map.v[j][i] = B_GROUND;
 	}
 	else if (c == '3')
-		g->map.v[j][i] = B_D3;
+	{
+		add_sprite(i * BOX_SIZE + BOX_SIZE / 2, j * BOX_SIZE + BOX_SIZE / 2, B_D3, g);
+		g->map.v[j][i] = B_GROUND;
+	}
 	else if (c == '4')
-		g->map.v[j][i] = B_D4;
+	{
+		add_sprite(i * BOX_SIZE + BOX_SIZE / 2, j * BOX_SIZE + BOX_SIZE / 2, B_D4, g);
+		g->map.v[j][i] = B_GROUND;
+	}
 	else if (c == '5')
-		g->map.v[j][i] = B_D5;
+	{
+		add_sprite(i * BOX_SIZE + BOX_SIZE / 2, j * BOX_SIZE + BOX_SIZE / 2, B_D5, g);
+		g->map.v[j][i] = B_GROUND;
+	}
 	else if (c == '6')
-		g->map.v[j][i] = B_D6;
+	{
+		add_sprite(i * BOX_SIZE + BOX_SIZE / 2, j * BOX_SIZE + BOX_SIZE / 2, B_D6, g);
+		g->map.v[j][i] = B_GROUND;
+	}
 	else if (c == 'X')
 		g->map.v[j][i] = B_DOOR;
 	else if (c == ' ')

@@ -6,7 +6,7 @@
 /*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/09/26 17:20:48 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/04 13:27:49 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,26 +15,39 @@
 
 int	key_press(int keycode, t_game *g)
 {
- 	if (keycode == XK_Up || keycode == XK_Down)
+ 	if (keycode == XK_w || keycode == XK_s || keycode == XK_a || keycode == XK_d)
 	{
-		double	dx;
-		double	dy;
+		float	dx;
+		float	dy;
 		int	x;
 		int	y;
 
-		dx = (int) (TRANS_STEP * cos(g->pos.rot * ROT_STEP * PI / 180.0));
-		dy = (int) (TRANS_STEP * sin(g->pos.rot * ROT_STEP * PI / 180.0));
-
-		//printf("Key Up Down\n");
-		if (keycode == XK_Up)
+		if (keycode == XK_w || keycode == XK_s)
 		{
-			dx = -dx;
-			dy = -dy;
+			dx = (int) (TRANS_STEP * cos(g->pos.rot * ROT_STEP * PI / 180.0));
+			dy = (int) (TRANS_STEP * sin(g->pos.rot * ROT_STEP * PI / 180.0));
+			if (keycode == XK_w)
+			{
+				dx = -dx;
+				dy = -dy;
+			}
+		}
+		else
+		{
+			dx = (int) (TRANS_STEP *  sin(g->pos.rot * ROT_STEP * PI / 180.0));
+			dy = (int) (TRANS_STEP * -cos(g->pos.rot * ROT_STEP * PI / 180.0));
+			if (keycode == XK_d)
+			{
+				dx = -dx;
+				dy = -dy;
+			}
 		}
 		x = (int) ((g->pos.px - dx) / BOX_SIZE);
 		y = (int) ((g->pos.py + dy) / BOX_SIZE);
-		if (((keycode == XK_Up && !g->frames[FR_UP]) ||
-			(keycode == XK_Down && !g->frames[FR_DOWN])) &&
+		if (((keycode == XK_w && !g->frames[FR_UP]) ||
+			(keycode == XK_s && !g->frames[FR_DOWN]) ||
+			(keycode == XK_a && !g->frames[FR_LEFT]) ||
+			(keycode == XK_d && !g->frames[FR_RIGHT])) &&
 				(x > 0 && y > 0 && x < g->map.l && y < g->map.h && g->map.v[y][x] == B_GROUND &&
 				g->map.v[y][(int) ((g->pos.px - dx + WALL_COLISION) / BOX_SIZE)] == B_GROUND &&
 				g->map.v[y][(int) ((g->pos.px - dx - WALL_COLISION) / BOX_SIZE)] == B_GROUND &&
@@ -45,16 +58,21 @@ int	key_press(int keycode, t_game *g)
 			g->pos.py += dy;
 			g->pos.x = x;
 			g->pos.y = y;
-			if (keycode == XK_Up)
+			sort_sprites(g);
+			if (keycode == XK_w)
 				g->frames[FR_UP] = 1;
-			else
+			else if (keycode == XK_s)
 				g->frames[FR_DOWN] = 1;
+			else if (keycode == XK_a)
+				g->frames[FR_LEFT] = 1;
+			else if (keycode == XK_d)
+				g->frames[FR_RIGHT] = 1;
 		}
 	}
 	if (keycode == XK_Right || keycode == XK_Left)
 	{
-		if ((keycode == XK_Right && !g->frames[FR_RIGHT]) ||
-			(keycode == XK_Left && !g->frames[FR_LEFT]))
+		if ((keycode == XK_Right && !g->frames[FR_ROT_R]) ||
+			(keycode == XK_Left && !g->frames[FR_ROT_L]))
 		{
 			if (keycode == XK_Right)
 				g->pos.rot--;
@@ -65,9 +83,9 @@ int	key_press(int keycode, t_game *g)
 			else if (g->pos.rot >= 360 / ROT_STEP)
 				g->pos.rot = 0;
 			if (keycode == XK_Right)
-				g->frames[FR_RIGHT] = 1;
+				g->frames[FR_ROT_R] = 1;
 			else
-				g->frames[FR_LEFT] = 1;
+				g->frames[FR_ROT_L] = 1;
 		}
 	}
 	return (1);
@@ -123,8 +141,8 @@ int	mouse_hook(int button, int x, int y, t_game *g)
 {
 	if (button == 1)
 	{
-		double	alpha;
-		alpha = atan(((double) x / SCALE - WIDTH / 2) / g->dpp) * 180.0 / PI; 
+		float	alpha;
+		alpha = atan(((float) x / SCALE - WIDTH / 2) / g->dpp) * 180.0 / PI; 
 		g->pos.rot -= (int)  alpha / ROT_STEP;
 		if (g->pos.rot < 0)
 			g->pos.rot += 360 / ROT_STEP;
