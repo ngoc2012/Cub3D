@@ -6,7 +6,7 @@
 /*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/04 13:27:49 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/04 15:33:41 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,7 +221,7 @@ void	render_backgroud(t_game *g)
 				else
 					Ay = Apy / BOX_SIZE;
 				door_coor = (int) (Apx + dpx / 2 - BOX_SIZE * (float) Ax);
-				while ((Apx >= 0 && Apx < g->map.pl) &&
+				while ((Ax >= 0 && Ax < g->map.l) && (Ay >= 0 && Ay < g->map.h) &&
 					((g->map.v[Ay][Ax] != B_WALL && g->map.v[Ay][Ax] != B_DOOR)
 					|| (Ay == g->opened_door_y && Ax == g->opened_door_x && g->map.v[Ay][Ax] == B_DOOR && door_coor < g->hidden_door)))
 				{
@@ -233,8 +233,9 @@ void	render_backgroud(t_game *g)
 					else
 						Ay = Apy / BOX_SIZE;
 					door_coor = (int) (Apx + dpx / 2 - BOX_SIZE * (float) Ax);
+					//printf("Apx = %f, Ax = %d, Ay = %d\n", Apx, Ax, Ay);
 				}
-				if (Apx < 0 || Apx >= g->map.pl)
+				if (Ax < 0 || Ax >= g->map.l || Ay < 0 || Ay >= g->map.h)
 					dA = INFINI;
 				else
 				{
@@ -279,7 +280,8 @@ void	render_backgroud(t_game *g)
 					Bx = Bpx / BOX_SIZE - 1;
 				By = Bpy / BOX_SIZE;
 				door_coor = (int) (Bpy + dpy / 2 - BOX_SIZE * (float) By);
-				while ((Bpy >= 0 && Bpy < g->map.ph) &&
+				//while ((Bpy >= 0 && Bpy < g->map.ph) &&
+				while ((Bx >= 0 && Bx < g->map.l) && (By >= 0 && By < g->map.h) &&
 					((g->map.v[By][Bx] != B_WALL && g->map.v[By][Bx] != B_DOOR)
 				|| (By == g->opened_door_y && Bx == g->opened_door_x && g->map.v[By][Bx] == B_DOOR && door_coor < g->hidden_door)))
 				{
@@ -292,7 +294,8 @@ void	render_backgroud(t_game *g)
 					By = Bpy / BOX_SIZE;
 					door_coor = (int) (Bpy + dpy / 2 - BOX_SIZE * (float) By);
 				}
-				if (Bpy < 0 || Bpy >= g->map.ph)
+				//if (Bpy < 0 || Bpy >= g->map.ph)
+				if (Bx < 0 || Bx >= g->map.l || By < 0 || By >= g->map.h)
 					dB = INFINI;
 				else
 				{
@@ -519,12 +522,12 @@ void	draw_map(t_game *g)
 		{
 			if (i == g->pos.y && j == g->pos.x)
 				printf(COLOR_BOLD_SLOW_BLINKING_RED "x" COLOR_OFF);
-			else if (i == g->pos.Ay && j == g->pos.Ax && i == g->pos.By && j == g->pos.Bx)
-				printf(COLOR_BOLD_SLOW_BLINKING_CYAN "%d" COLOR_OFF, g->map.v[i][j]);
-			else if (i == g->pos.Ay && j == g->pos.Ax)
-				printf(COLOR_BOLD_SLOW_BLINKING_BLUE "%d" COLOR_OFF, g->map.v[i][j]);
-			else if (i == g->pos.By && j == g->pos.Bx)
-				printf(COLOR_BOLD_SLOW_BLINKING_GREEN "%d" COLOR_OFF, g->map.v[i][j]);
+			//else if (i == g->pos.Ay && j == g->pos.Ax && i == g->pos.By && j == g->pos.Bx)
+			//	printf(COLOR_BOLD_SLOW_BLINKING_CYAN "%d" COLOR_OFF, g->map.v[i][j]);
+			//else if (i == g->pos.Ay && j == g->pos.Ax)
+			//	printf(COLOR_BOLD_SLOW_BLINKING_BLUE "%d" COLOR_OFF, g->map.v[i][j]);
+			//else if (i == g->pos.By && j == g->pos.Bx)
+			//	printf(COLOR_BOLD_SLOW_BLINKING_GREEN "%d" COLOR_OFF, g->map.v[i][j]);
 			else
 				printf("%d", g->map.v[i][j]);
 			printf(" ");
@@ -601,6 +604,7 @@ int	draw(t_game *g)
 		}
 
 	}
+	//draw_map(g);
 	render_backgroud(g);
 	render_object(g->gun_tex, (int *) g->mlx.addr, WIDTH / 2, HEIGHT);
 	draw_mini_map(g);
