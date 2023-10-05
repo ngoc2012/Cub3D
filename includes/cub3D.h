@@ -6,7 +6,7 @@
 /*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 09:21:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/05 13:36:44 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/05 14:26:51 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 
 # define WIDTH 600
 # define HEIGHT 300
-# define SCALE 2
+# define SCALE 3
 # define FOV 90
 # define BOX_SIZE 64
 # define WALL_COLISION 8
