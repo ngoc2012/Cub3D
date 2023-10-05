@@ -6,7 +6,7 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/04 15:34:37 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/05 15:16:58 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,30 @@ int	get_map(t_game *g, char *fn)
 		}
 		free(s);
 		s = get_next_line(fd);
+	}
+	int w = 0;
+	int x;
+	while (w < g->map.h)
+	{
+		x = 0;
+		while (x < g->map.l)
+		{
+			if (g->map.v[0][x] == B_GROUND || g->map.v[g->map.h - 1][x] == B_GROUND)
+				end_game(g, 1, "Invalid map\n");
+			if (x != 0)
+				if (g->map.v[w][x] == B_GROUND && g->map.v[w][x - 1] == B_EMPTY)
+					end_game(g, 1, "Invalid map\n");
+			if (w != 0)
+				if (g->map.v[w][x] == B_GROUND && g->map.v[w - 1][x] == B_EMPTY)
+					end_game(g, 1, "Invalid map\n");
+			if (g->map.v[w][x] == B_GROUND && g->map.v[w][x + 1] == B_EMPTY
+				|| g->map.v[w][x] == B_GROUND && g->map.v[w + 1][x] == B_EMPTY)
+				end_game(g, 1, "Invalid map\n");
+			x++;
+		}
+		if (g->map.v[w][g->map.l - 1] == B_GROUND || g->map.v[w][0] == B_GROUND)
+			end_game(g, 1, "Invalid map\n");
+		w++;
 	}
 	if (count_perso == 0 || count_perso > 1)
 		end_game(g, 1, "Invalid map\n");
