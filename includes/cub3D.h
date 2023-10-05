@@ -6,13 +6,14 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 09:21:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/05 15:46:54 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/05 16:38:32 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CUB3D_H
 # define CUB3D_H
 
+#	include <stdio.h>
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <fcntl.h>
@@ -232,5 +233,8 @@ int	key_release(int keycode, t_game *g);
 int	mouse_hook(int button, int x, int y, t_game *g);
 void	sort_sprites(t_game *g);
 void	draw_hero_map(int yp, int xp, int *addr);
+void	for_check_map(t_game *g, char *fn);
+void	verif_wall(t_game *g);
+int	check_map(char *s);
 
 #endif

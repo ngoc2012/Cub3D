@@ -6,11 +6,10 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/05 15:16:58 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/05 16:40:33 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include "cub3D.h"
 
 void	free_map(t_map *m)
@@ -26,7 +25,7 @@ void	free_map(t_map *m)
 
 void	add_sprite(float px, double py, enum e_map type, t_game *g)
 {
-	int		i;
+	int			i;
 	t_sprite	*new;
 
 	g->n_sprites++;
@@ -105,53 +104,27 @@ static void	get_position(t_game *g, int i, int j, char c)
 	}
 }
 
-int	check_map(char *s)
+void	init_boxsize(t_game *g)
 {
-	char	*s0;
-
-	s0 = s;
-	while (ft_strchr(" 	\n", *s0))
-		s0++;
-	if (!*s0)
-		return (0);
-	while (*s)
-		if (!ft_strchr(MAP_CHAR, *(s++)))
-			return (0);
-	return (1);
-}
-
-int	get_map(t_game *g, char *fn)
-{
-	int	count_perso;
-	int	fd;
-	char	*s;
 	int	i;
-	int	j;
-	int	in_map;
 
-	fd = open(fn, O_RDONLY);
-	if (fd == -1)
-		return (0);
-	s = get_next_line(fd);
-	while (s)
-	{
-		if (check_map(s))
-		{
-			g->map.h++;
-			if ((int) ft_strlen(s) - 1 > g->map.l)
-				g->map.l = (int) ft_strlen(s) - 1;
-		}
-		free(s);
-		s = get_next_line(fd);
-	}
-	close(fd);
-	//printf("h = %d, l = %d\n", g->map.h, g->map.l);
 	g->map.ph = g->map.h * BOX_SIZE;
 	g->map.pl = g->map.l * BOX_SIZE;
 	g->map.v = malloc(sizeof(enum e_map *) * g->map.h);
 	i = -1;
 	while (++i < g->map.h)
 		g->map.v[i] = 0;
+}
+
+void	for_check_map(t_game *g, char *fn)
+{
+	int		i;
+	int		fd;
+	char	*s;
+	int		j;
+	int		in_map;
+	int		count_perso;
+
 	fd = open(fn, O_RDONLY);
 	j = -1;
 	in_map = 0;
@@ -183,34 +156,35 @@ int	get_map(t_game *g, char *fn)
 		free(s);
 		s = get_next_line(fd);
 	}
-	int w = 0;
-	int x;
-	while (w < g->map.h)
-	{
-		x = 0;
-		while (x < g->map.l)
-		{
-			if (g->map.v[0][x] == B_GROUND || g->map.v[g->map.h - 1][x] == B_GROUND)
-				end_game(g, 1, "Invalid map\n");
-			if (x != 0)
-				if (g->map.v[w][x] == B_GROUND && g->map.v[w][x - 1] == B_EMPTY)
-					end_game(g, 1, "Invalid map\n");
-			if (w != 0)
-				if (g->map.v[w][x] == B_GROUND && g->map.v[w - 1][x] == B_EMPTY)
-					end_game(g, 1, "Invalid map\n");
-			if (g->map.v[w][x] == B_GROUND && g->map.v[w][x + 1] == B_EMPTY
-				|| g->map.v[w][x] == B_GROUND && g->map.v[w + 1][x] == B_EMPTY)
-				end_game(g, 1, "Invalid map\n");
-			x++;
-		}
-		if (g->map.v[w][g->map.l - 1] == B_GROUND || g->map.v[w][0] == B_GROUND)
-			end_game(g, 1, "Invalid map\n");
-		w++;
-	}
+	close(fd);
 	if (count_perso == 0 || count_perso > 1)
 		end_game(g, 1, "Invalid map\n");
+}
+
+int	get_map(t_game *g, char *fn)
+{
+	int		fd;
+	char	*s;
+	int		i;
+
+	fd = open(fn, O_RDONLY);
+	if (fd == -1)
+		return (0);
+	s = get_next_line(fd);
+	while (s)
+	{
+		if (check_map(s))
+		{
+			g->map.h++;
+			if ((int) ft_strlen(s) - 1 > g->map.l)
+				g->map.l = (int) ft_strlen(s) - 1;
+		}
+		free(s);
+		s = get_next_line(fd);
+	}
 	close(fd);
-	if (g->map.h < 5 || g->map.l < 5)
-		end_game(g, 1, "Invalid map\n");
+	init_boxsize(g);
+	for_check_map(g, fn);
+	verif_wall(g);
 	return (1);
 }
