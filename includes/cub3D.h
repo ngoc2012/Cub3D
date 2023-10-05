@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3D.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 09:21:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/05 14:26:51 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/05 15:46:54 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,5 +231,6 @@ int	key_press(int keycode, t_game *g);
 int	key_release(int keycode, t_game *g);
 int	mouse_hook(int button, int x, int y, t_game *g);
 void	sort_sprites(t_game *g);
+void	draw_hero_map(int yp, int xp, int *addr);
 
 #endif
