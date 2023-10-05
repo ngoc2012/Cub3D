@@ -6,7 +6,7 @@
 /*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/04 15:33:41 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/04 17:59:31 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ void	render_backgroud(t_game *g)
 	// Angle tolerance 1 pixel / size
 	tol_h= 1.0 / (float) g->map.h / BOX_SIZE;
 	tol_l = 1.0 / (float) g->map.l / BOX_SIZE;
+	t_sprite	*sp = 0;
 	ix = -1;
 	while (++ix < WIDTH)
 	{
@@ -483,11 +484,23 @@ void	render_backgroud(t_game *g)
 								*addr = color;
 							addr += WIDTH;
 						}
+						if (g->shoot && g->sprites[i].type == B_SPRITE && g->sprites[i].state != DIE && (ix == WIDTH / 2 || ix == WIDTH / 2 - 1))
+							sp = &g->sprites[i];
 					}
 				}
 			}
 		}
 	}
+	if (g->shoot && sp)
+	{
+		sp->health--;
+		if (!sp->health)
+		{
+			sp->state = DIE;
+			sp->i_tex = 0;
+		}
+	}
+	g->shoot = 0;
 }
 
 void	scale_window(t_game *g)
@@ -599,8 +612,11 @@ int	draw(t_game *g)
 				if (g->sprites[i].i_tex == (SPRITE_STATE * 3))
 					g->sprites[i].i_tex = 0;
 			}
-			else
-				g->sprites[i].tex = &g->sp_tex[0];
+			else if (g->sprites[i].state == DIE && g->sprites[i].i_tex < (SPRITE_STATE * 5))
+			{
+				g->sprites[i].tex = &g->sp_hit[g->sprites[i].i_tex / SPRITE_STATE];
+				g->sprites[i].i_tex++;
+			}
 		}
 
 	}
