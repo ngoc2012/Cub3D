@@ -6,7 +6,7 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/09 13:50:28 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/09 14:17:53 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,6 +187,8 @@ int	get_map(t_game *g, char *fn)
 		s = get_next_line(fd);
 	}
 	close(fd);
+	if (g->map.h < 3 || g->map.l < 3)
+		end_game(g, 1, "Invalid map 3\n");
 	init_boxsize(g);
 	for_check_map(g, fn, 0);
 	verif_wall(g);

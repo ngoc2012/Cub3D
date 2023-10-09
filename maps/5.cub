@@ -5,8 +5,8 @@ EA ./walls/shinybrick.xpm
 DO ./walls/door101.xpm
 FL ./walls/Fires.xpm
 CL ./walls/redlight.xpm
-F 220,100,0
-C 225,30,0
+#F 220,100,0
+#C 225,30,0
 
             1111111111111111111111111111111
             1460200312002002100000000000001
