@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   cub3D.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 09:21:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/09 13:34:21 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/09 10:07:06 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CUB3D_H
 # define CUB3D_H
 
-#	include <stdio.h>
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <fcntl.h>
@@ -29,19 +28,19 @@
 
 # define WIDTH 600
 # define HEIGHT 300
-# define SCALE 3
+# define SCALE 4
 # define FOV 90
 # define BOX_SIZE 64
 # define WALL_COLISION 8
-# define TRANS_STEP 32
-# define ROT_STEP 10
-# define TRANS_SPEED 1
+# define TRANS_STEP 16
+# define ROT_STEP 5
+# define TRANS_SPEED 5
 # define ROT_SPEED 0
 # define GUN_SPEED 2
-# define DOOR_SPEED 2
-# define DOOR_IDLE 40
+# define DOOR_SPEED 1
+# define DOOR_IDLE 80
 # define SPRITE_IDLE 5
-# define SPRITE_STATE 3
+# define SPRITE_STATE 6
 # define HEALTH_SPRITE 2
 # define PI 3.141592654
 # define INFINI INT_MAX
@@ -108,6 +107,14 @@ typedef struct s_pos {
 	int		Ay;
 	int		Bx;
 	int		By;
+	float		dpx;
+	float		dpy;
+	float		Apx;
+	float		Apy;
+	float		Bpx;
+	float		Bpy;
+	float		dA;
+	float		dB;
 }	t_pos;
 
 /*
@@ -203,6 +210,8 @@ typedef struct s_game {
 	int	opened_door_x;
 	int	opened_door_y;
 	int	hidden_door;
+	int	fl_color;
+	int	cl_color;
 	char	opened;
 	float	*ai0;
 	float	*cos_ai0;
@@ -214,7 +223,21 @@ typedef struct s_game {
 	float	*sin_a1;
 	float	*a1;
 	t_equa2	eq;
+	float	tol_h;
+	float	tol_l;
 }	t_game;
+
+typedef struct s_render {
+	float	dh;
+	int	xh;
+	int	yh;
+	float	xph;
+	float	yph;
+	float	d;
+	int	tx;
+	int	ty;
+	t_tex	*tex;
+}	t_render;
 
 void	free_map(t_map *m);
 int	get_map(t_game *g, char *fn);
@@ -232,10 +255,12 @@ int	key_press(int keycode, t_game *g);
 int	key_release(int keycode, t_game *g);
 int	mouse_hook(int button, int x, int y, t_game *g);
 void	sort_sprites(t_game *g);
-void	draw_hero_map(int yp, int xp, int *addr);
-void	for_check_map(t_game *g, char *fn, int count_perso);
-void	verif_wall(t_game *g);
-int	check_map(char *s);
-void	free_map(t_map *m);
+int	create_trgb(unsigned char t, unsigned char r,
+		unsigned char g, unsigned char b);
+void	render_sprites(t_game *g, int ix, float d, t_sprite **sp);
+float	render_box(t_game *g, int ix);
+void	get_b(t_game *g, int ix, float ai);
+void	get_ab(t_game *g, int ix);
+void	frames(t_game *g);
 
 #endif

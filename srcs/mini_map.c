@@ -6,16 +6,31 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 14:35:06 by nbechon           #+#    #+#             */
-/*   Updated: 2023/10/05 15:48:59 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/05 17:23:26 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
-static int	create_trgb(unsigned char t, unsigned char r,
-		unsigned char g, unsigned char b)
+void	draw_hero(int yp, int xp, int *addr)
 {
-	return (t << 24 | r << 16 | g << 8 | b);
+	int	i;
+	int	j;
+
+	yp -= 3;
+	xp -= 5;
+	i = 0;
+	while (i < 5)
+	{
+		j = 0;
+		while (j < 5)
+		{
+			addr[yp * WIDTH + (xp + j)] = create_trgb(1, 255, 0, 0);
+			j++;
+		}
+		yp += 1;
+		i++;
+	}
 }
 
 void	wall(int *addr, int p, int k, int count)
@@ -45,11 +60,14 @@ void	wall(int *addr, int p, int k, int count)
 	}
 }
 
-void	draw_wall_map(t_game *g, int *addr, int i, int j)
+void	draw_hero_and_wall(t_game *g, int l, int h, int *addr)
 {
+	int		i;
+	int		j;
 	int		k;
 	int		p;
 
+	i = g->pos.y - 4;
 	p = 0;
 	while (i <= g->pos.y + 4)
 	{
@@ -69,9 +87,10 @@ void	draw_wall_map(t_game *g, int *addr, int i, int j)
 		i++;
 		p++;
 	}
+	draw_hero(h / 2, l / 2, addr);
 }
 
-void	draw_life(int *addr, int l)
+draw_life(int *addr, int l)
 {
 	int	i;
 	int	j;
@@ -88,8 +107,7 @@ void	draw_life(int *addr, int l)
 			j = 6;
 			while (j < 20)
 			{
-				addr[(HEIGHT - 30 + i) * WIDTH + (WIDTH - j - n)]
-					= create_trgb(255, 255, 0, 0);
+				addr[(HEIGHT - 30 + i) * WIDTH + (WIDTH - j - n)] = create_trgb(255, 255, 0, 0);
 				j++;
 			}
 			i++;
@@ -104,7 +122,6 @@ void	draw_mini_map(t_game *g)
 	int	*addr;
 
 	addr = (int *)g->mlx.addr;
-	draw_wall_map(g, addr, g->pos.y - 4, g->pos.x - 4);
-	draw_hero_map((HEIGHT / 4) / 2, (WIDTH / 4) / 2, addr);
+	draw_hero_and_wall(g, WIDTH / 4, HEIGHT / 4, addr);
 	draw_life(addr, WIDTH / 3);
 }

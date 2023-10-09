@@ -3,14 +3,14 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+         #
+#    By: minh-ngu <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/28 10:56:09 by minh-ngu          #+#    #+#              #
-#    Updated: 2023/10/09 13:50:17 by nbechon          ###   ########.fr        #
+#    Updated: 2023/10/09 14:15:28 by ngoc             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS = main.c map.c draw.c mini_map.c for_hero_map.c for_check.c hook.c math.c texture.c
+SRCS = main.c map.c draw.c mini_map.c hook.c math.c texture.c sprites.c	render_box.c get_A.c get_B.c frames.c for_check.c for_hero_map.c
 MSRC = $(addprefix srcs/, $(SRCS))
 MOBJ = ${MSRC:.c=.o}
 MANDA = cub3D
@@ -37,14 +37,14 @@ $(MANDA):	$(MOBJ) $(LIBFT) $(LIBGNL) $(LIBML)
 bonus:	$(MANDA)
 norm:
 	norminette $(LIBS) srcs includes
-fgsfggfgits:
+gits:
 	git add Makefile
 	git add $(addsuffix /Makefile, $(LIBS))
 	git add $(addsuffix /*.c, $(LIBS) srcs)
 	git add $(addsuffix /*.h, $(LIBS) includes)
 	git commit -m "all"
 	git push
-gits:
+sdfsdfgits:
 	git add -A
 	git commit -m "all"
 	git push
