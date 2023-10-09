@@ -6,7 +6,7 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/05 16:40:33 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/09 13:50:28 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,27 +59,32 @@ static void	get_position(t_game *g, int i, int j, char c)
 		g->map.v[j][i] = B_WALL;
 	else if (c == '2')
 	{
-		add_sprite(i * BOX_SIZE + BOX_SIZE / 2, j * BOX_SIZE + BOX_SIZE / 2, B_SPRITE, g);
+		add_sprite(i * BOX_SIZE + BOX_SIZE / 2,
+			j * BOX_SIZE + BOX_SIZE / 2, B_SPRITE, g);
 		g->map.v[j][i] = B_GROUND;
 	}
 	else if (c == '3')
 	{
-		add_sprite(i * BOX_SIZE + BOX_SIZE / 2, j * BOX_SIZE + BOX_SIZE / 2, B_D3, g);
+		add_sprite(i * BOX_SIZE + BOX_SIZE / 2,
+			j * BOX_SIZE + BOX_SIZE / 2, B_D3, g);
 		g->map.v[j][i] = B_GROUND;
 	}
 	else if (c == '4')
 	{
-		add_sprite(i * BOX_SIZE + BOX_SIZE / 2, j * BOX_SIZE + BOX_SIZE / 2, B_D4, g);
+		add_sprite(i * BOX_SIZE + BOX_SIZE / 2,
+			j * BOX_SIZE + BOX_SIZE / 2, B_D4, g);
 		g->map.v[j][i] = B_GROUND;
 	}
 	else if (c == '5')
 	{
-		add_sprite(i * BOX_SIZE + BOX_SIZE / 2, j * BOX_SIZE + BOX_SIZE / 2, B_D5, g);
+		add_sprite(i * BOX_SIZE + BOX_SIZE / 2,
+			j * BOX_SIZE + BOX_SIZE / 2, B_D5, g);
 		g->map.v[j][i] = B_GROUND;
 	}
 	else if (c == '6')
 	{
-		add_sprite(i * BOX_SIZE + BOX_SIZE / 2, j * BOX_SIZE + BOX_SIZE / 2, B_D6, g);
+		add_sprite(i * BOX_SIZE + BOX_SIZE / 2,
+			j * BOX_SIZE + BOX_SIZE / 2, B_D6, g);
 		g->map.v[j][i] = B_GROUND;
 	}
 	else if (c == 'X')
@@ -116,14 +121,13 @@ void	init_boxsize(t_game *g)
 		g->map.v[i] = 0;
 }
 
-void	for_check_map(t_game *g, char *fn)
+void	for_check_map(t_game *g, char *fn, int count_perso)
 {
 	int		i;
 	int		fd;
 	char	*s;
 	int		j;
 	int		in_map;
-	int		count_perso;
 
 	fd = open(fn, O_RDONLY);
 	j = -1;
@@ -184,7 +188,7 @@ int	get_map(t_game *g, char *fn)
 	}
 	close(fd);
 	init_boxsize(g);
-	for_check_map(g, fn);
+	for_check_map(g, fn, 0);
 	verif_wall(g);
 	return (1);
 }

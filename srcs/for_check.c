@@ -6,7 +6,7 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 16:33:50 by nbechon           #+#    #+#             */
-/*   Updated: 2023/10/05 16:40:11 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/09 13:53:54 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,22 @@ int	check_map(char *s)
 	return (1);
 }
 
+void	check(int x, int w, t_game *g)
+{
+	if (g->map.v[0][x] == B_GROUND || g->map.v[g->map.h - 1][x]
+		== B_GROUND)
+		end_game(g, 1, "Invalid map\n");
+	if (x != 0)
+		if (g->map.v[w][x] == B_GROUND && g->map.v[w][x - 1] == B_EMPTY)
+			end_game(g, 1, "Invalid map\n");
+	if (w != 0)
+		if (g->map.v[w][x] == B_GROUND && g->map.v[w - 1][x] == B_EMPTY)
+			end_game(g, 1, "Invalid map\n");
+	if (g->map.v[w][x] == B_GROUND && g->map.v[w][x + 1] == B_EMPTY
+		|| g->map.v[w][x] == B_GROUND && g->map.v[w + 1][x] == B_EMPTY)
+		end_game(g, 1, "Invalid map\n");
+}
+
 void	verif_wall(t_game *g)
 {
 	int	w;
@@ -38,18 +54,7 @@ void	verif_wall(t_game *g)
 		x = 0;
 		while (x < g->map.l)
 		{
-			if (g->map.v[0][x] == B_GROUND || g->map.v[g->map.h - 1][x]
-				== B_GROUND)
-				end_game(g, 1, "Invalid map\n");
-			if (x != 0)
-				if (g->map.v[w][x] == B_GROUND && g->map.v[w][x - 1] == B_EMPTY)
-					end_game(g, 1, "Invalid map\n");
-			if (w != 0)
-				if (g->map.v[w][x] == B_GROUND && g->map.v[w - 1][x] == B_EMPTY)
-					end_game(g, 1, "Invalid map\n");
-			if (g->map.v[w][x] == B_GROUND && g->map.v[w][x + 1] == B_EMPTY
-				|| g->map.v[w][x] == B_GROUND && g->map.v[w + 1][x] == B_EMPTY)
-				end_game(g, 1, "Invalid map\n");
+			check(x, w, g);
 			x++;
 		}
 		if (g->map.v[w][g->map.l - 1] == B_GROUND || g->map.v[w][0] == B_GROUND)
