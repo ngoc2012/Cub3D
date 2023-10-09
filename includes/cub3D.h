@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/11 09:21:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/09 10:07:06 by ngoc             ###   ########.fr       */
+/*   Created: 2023/10/09 21:01:13 by ngoc              #+#    #+#             */
+/*   Updated: 2023/10/09 21:14:14 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,21 +59,23 @@
 # define MAP_CHAR " \n0123456NSWEX"
 
 /*
-NO: North walls
-SO: South walls
-WE: West walls
-EA: East walls
-DO: Door
-FL: Floor
-CL: Ceiling
-D3: Decor 3 (3)
-D4: Decor 4 (4)
-D5: Decor 5 (5)
-D6: Decor 6 (6)
+t_no: North walls
+t_so: South walls
+t_we: West walls
+t_ea: East walls
+t_do: Door
+t_fl: Floor
+t_cl: Ceiling
+t_d3: Decor 3 (3)
+t_d4: Decor 4 (4)
+t_d5: Decor 5 (5)
+t_d6: Decor 6 (6)
 */
-enum e_map {B_WALL, B_GROUND, B_EMPTY, B_DOOR, B_SPRITE, B_D3, B_D4, B_D5, B_D6};
-enum e_tex {NO, SO, WE, EA, DO, FL, CL, D3, D4, D5, D6};
-enum e_frame {FR_UP, FR_DOWN, FR_LEFT, FR_RIGHT, FR_ROT_L, FR_ROT_R, FR_GUN, FR_DOOR};
+enum e_map {b_wall, b_ground, b_empty, b_door, \
+b_sprite, b_d3, b_d4, b_d5, b_d6};
+enum e_tex {t_no, t_so, t_we, t_ea, t_do, t_fl, t_cl, t_d3, t_d4, t_d5, t_d6};
+enum e_frame {fr_up, fr_down, fr_left, fr_right, \
+fr_rotl, fr_rotr, fr_gun, fr_door};
 
 /*
 Map:
@@ -83,10 +85,10 @@ Map:
 */
 typedef struct s_map {
 	enum e_map	**v;
-	int	h;
-	int	l;
-	int	ph;
-	int	pl;
+	int			h;
+	int			l;
+	int			ph;
+	int			pl;
 }	t_map;
 
 /*
@@ -100,21 +102,21 @@ Player position
 typedef struct s_pos {
 	int		x;
 	int		y;
-	float		px;
-	float		py;
+	float	px;
+	float	py;
 	int		rot;
-	int		Ax;
-	int		Ay;
-	int		Bx;
-	int		By;
-	float		dpx;
-	float		dpy;
-	float		Apx;
-	float		Apy;
-	float		Bpx;
-	float		Bpy;
-	float		dA;
-	float		dB;
+	int		ax;
+	int		ay;
+	int		bx;
+	int		by;
+	float	dpx;
+	float	dpy;
+	float	apx;
+	float	apy;
+	float	bpx;
+	float	bpy;
+	float	da;
+	float	db;
 }	t_pos;
 
 /*
@@ -151,20 +153,20 @@ typedef struct s_tex {
 	char	*addr;
 }	t_tex;
 
-enum e_sprite {NORMAL, FIRE, FREEZE, DIE};
+enum e_sprite {s_normal, s_fire, s_freeze, s_die};
 /*
 Sprites
 - dd: distance to character
 */
 typedef struct s_sprite {
-	enum e_map	type;
-	float		px;
-	float		py;
-	float		dd;
+	float			px;
+	float			py;
+	float			dd;
+	enum e_map		type;
 	unsigned char	health;
 	unsigned char	i_tex;
 	enum e_sprite	state;
-	t_tex	*tex;
+	t_tex			*tex;
 }	t_sprite;
 
 /*
@@ -184,8 +186,8 @@ struct s_equa2 {
 	float	c2;
 	float	x;
 	float	y;
-	void	(*getDet)(t_equa2 *);
-	void	(*getXY)(t_equa2 *);
+	void	(*get_det)(t_equa2 *);
+	void	(*get_xy)(t_equa2 *);
 };
 
 /*
@@ -193,70 +195,70 @@ main:
 - dpp : distance to Projection Plan
 */
 typedef struct s_game {
-	t_map		map;
-	t_pos		pos;
-	t_mlx		mlx;
-	int		dpp;
-	int		frames[N_FRAMES];
-	t_tex	tex[N_TEX];
-	t_tex	gun[3];
-	t_tex	sp_tex[3];
-	t_tex	sp_att[3];
-	t_tex	sp_hit[5];
-	t_tex	*gun_tex;
-	t_sprite	*sprites;
+	t_map			map;
+	t_pos			pos;
+	t_mlx			mlx;
+	int				dpp;
+	int				frames[N_FRAMES];
+	t_tex			tex[N_TEX];
+	t_tex			gun[3];
+	t_tex			sp_tex[3];
+	t_tex			sp_att[3];
+	t_tex			sp_hit[5];
+	t_tex			*gun_tex;
+	t_sprite		*sprites;
 	unsigned int	n_sprites;
 	unsigned int	shoot;
-	int	opened_door_x;
-	int	opened_door_y;
-	int	hidden_door;
-	int	fl_color;
-	int	cl_color;
-	char	opened;
-	float	*ai0;
-	float	*cos_ai0;
-	float	**ai;
-	float	**tan_ai;
-	float	**cos_ai;
-	float	**sin_ai;
-	float	*cos_a1;
-	float	*sin_a1;
-	float	*a1;
-	t_equa2	eq;
-	float	tol_h;
-	float	tol_l;
+	int				opened_door_x;
+	int				opened_door_y;
+	int				hidden_door;
+	int				fl_color;
+	int				cl_color;
+	char			opened;
+	float			*ai0;
+	float			*cos_ai0;
+	float			**ai;
+	float			**tan_ai;
+	float			**cos_ai;
+	float			**sin_ai;
+	float			*cos_a1;
+	float			*sin_a1;
+	float			*a1;
+	t_equa2			eq;
+	float			tol_h;
+	float			tol_l;
 }	t_game;
 
 typedef struct s_render {
-	float	dh;
-	int	xh;
-	int	yh;
+	int		xh;
+	int		yh;
+	int		tx;
+	int		ty;
 	float	xph;
 	float	yph;
+	float	dh;
 	float	d;
-	int	tx;
-	int	ty;
 	t_tex	*tex;
 }	t_render;
 
 void	free_map(t_map *m);
-int	get_map(t_game *g, char *fn);
-int	draw(t_game *g);
-int	key_hook(int keycode, t_game *g);
-int	end_game(t_game *g, int exit_code, char *s);
+int		get_map(t_game *g, char *fn);
+int		draw(t_game *g);
+int		key_hook(int keycode, t_game *g);
+int		end_game(t_game *g, int exit_code, char *s);
 void	draw_mini_map(t_game *g);
 float	angle_convert(double a);
 void	redraw(t_game *g);
-int	get_textures(t_game *g, char *fn);
+int		get_textures(t_game *g, char *fn);
 void	render_object(t_tex *t, int *bg, int x0, int y0);
 void	render_backgroud(t_game *g);
 void	scale_window(t_game *g);
-int	key_press(int keycode, t_game *g);
-int	key_release(int keycode, t_game *g);
-int	mouse_hook(int button, int x, int y, t_game *g);
+int		key_press(int keycode, t_game *g);
+int		key_release(int keycode, t_game *g);
+int		mouse_hook(int button, int x, int y, t_game *g);
 void	sort_sprites(t_game *g);
-int	create_trgb(unsigned char t, unsigned char r,
-		unsigned char g, unsigned char b);
+int		create_trgb(unsigned char t, unsigned char r,
+			unsigned char g, unsigned char b);
 void	render_sprites(t_game *g, int ix, float d, t_sprite **sp);
 float	render_box(t_game *g, int ix);
 void	get_b(t_game *g, int ix, float ai);

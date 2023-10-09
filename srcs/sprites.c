@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sprites.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   by: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/07 12:26:16 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/09 21:09:25 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	render_sprites(t_game *g, int ix, float d, t_sprite **sp)
 			g->eq.b2 = -g->cos_ai[ix][g->pos.rot];
 			g->eq.c2 = g->eq.a2 * g->pos.px + g->eq.b2 * g->pos.py;
 			g->eq.det = 1.0;
-			g->eq.getXY(&g->eq);
+			g->eq.get_xy(&g->eq);
 			float	start_x = g->sprites[i].px - tex->l / 2 * g->sin_a1[g->pos.rot];
 			float	start_y = g->sprites[i].py - tex->l / 2 * g->cos_a1[g->pos.rot];
 			float	end_x = start_x + tex->l * g->sin_a1[g->pos.rot];
@@ -92,7 +92,7 @@ void	render_sprites(t_game *g, int ix, float d, t_sprite **sp)
 						addr += WIDTH;
 					}
 
-					if (g->shoot && g->sprites[i].type == B_SPRITE && g->sprites[i].state != DIE && (ix == WIDTH / 2 || ix == WIDTH / 2 - 1))
+					if (g->shoot && g->sprites[i].type == b_sprite && g->sprites[i].state != s_die && (ix == WIDTH / 2 || ix == WIDTH / 2 - 1))
 						*sp = &g->sprites[i];
 				}
 			}

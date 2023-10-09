@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   by: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/09 07:48:47 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/09 20:56:40 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,10 @@ void	render_backgroud(t_game *g)
 	float		d;
 	t_sprite	*sp;
 
-	g->pos.Ax = -1;
-	g->pos.Ay = -1;
-	g->pos.Bx = -1;
-	g->pos.By = -1;
+	g->pos.ax = -1;
+	g->pos.ay = -1;
+	g->pos.bx = -1;
+	g->pos.by = -1;
 	sp = 0;
 	ix = -1;
 	while (++ix < WIDTH)
@@ -61,7 +61,7 @@ void	render_backgroud(t_game *g)
 		sp->health--;
 		if (!sp->health)
 		{
-			sp->state = DIE;
+			sp->state = s_die;
 			sp->i_tex = 0;
 		}
 	}

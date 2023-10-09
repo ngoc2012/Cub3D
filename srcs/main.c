@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   by: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/07 10:15:57 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/09 21:09:24 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,14 +86,14 @@ int	end_game(t_game *g, int exit_code, char *s)
 	return (1);
 }
 
-void	getDet(t_equa2 *e)
+void	get_det(t_equa2 *e)
 {
 	e->det = e->a1 * e->b2 - e->b1 * e->a2;
 }
 
-void	getXY(t_equa2 *e)
+void	get_xy(t_equa2 *e)
 {
-	e->getDet(e);
+	e->get_det(e);
 	e->x = (e->b2 * e->c1 - e->b1 * e->c2) / e->det;
 	e->y = (e->c2 * e->a1 - e->c1 * e->a2) / e->det;
 }
@@ -150,8 +150,8 @@ void	init(t_game *g)
 	g->gun_tex = &g->gun[0];
 	g->sprites = 0;
 	g->n_sprites = 0;
-	g->eq.getDet = getDet;
-	g->eq.getXY = getXY;
+	g->eq.get_det = get_det;
+	g->eq.get_xy = get_xy;
 }
 
 int	precalcul(t_game *g)
@@ -253,14 +253,14 @@ int	main(int argc, char **argv)
 	int	i = -1;
 	while (++i < g.n_sprites)
 	{
-		if (g.sprites[i].type == B_D3)
-			g.sprites[i].tex = &g.tex[D3];
-		else if (g.sprites[i].type == B_D4)
-			g.sprites[i].tex = &g.tex[D4];
-		else if (g.sprites[i].type == B_D5)
-			g.sprites[i].tex = &g.tex[D5];
-		else if (g.sprites[i].type == B_D6)
-			g.sprites[i].tex = &g.tex[D6];
+		if (g.sprites[i].type == b_d3)
+			g.sprites[i].tex = &g.tex[t_d3];
+		else if (g.sprites[i].type == b_d4)
+			g.sprites[i].tex = &g.tex[t_d4];
+		else if (g.sprites[i].type == b_d5)
+			g.sprites[i].tex = &g.tex[t_d5];
+		else if (g.sprites[i].type == b_d6)
+			g.sprites[i].tex = &g.tex[t_d6];
 	}
 	//mlx_key_hook(g.mlx.win, key_hook, &g);
 	mlx_mouse_hook(g.mlx.win, mouse_hook, &g);

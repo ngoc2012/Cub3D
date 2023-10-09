@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   for_check.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
+/*   by: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 16:33:50 by nbechon           #+#    #+#             */
-/*   Updated: 2023/10/09 13:53:54 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/09 20:56:40 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,18 +29,18 @@ int	check_map(char *s)
 
 void	check(int x, int w, t_game *g)
 {
-	if (g->map.v[0][x] == B_GROUND || g->map.v[g->map.h - 1][x]
-		== B_GROUND)
-		end_game(g, 1, "Invalid map\n");
+	if (g->map.v[0][x] == b_ground || g->map.v[g->map.h - 1][x]
+		== b_ground)
+		end_game(g, 1, "Invalid map 11\n");
 	if (x != 0)
-		if (g->map.v[w][x] == B_GROUND && g->map.v[w][x - 1] == B_EMPTY)
-			end_game(g, 1, "Invalid map\n");
+		if (g->map.v[w][x] == b_ground && g->map.v[w][x - 1] == b_empty)
+			end_game(g, 1, "Invalid map 12\n");
 	if (w != 0)
-		if (g->map.v[w][x] == B_GROUND && g->map.v[w - 1][x] == B_EMPTY)
-			end_game(g, 1, "Invalid map\n");
-	if (g->map.v[w][x] == B_GROUND && g->map.v[w][x + 1] == B_EMPTY
-		|| g->map.v[w][x] == B_GROUND && g->map.v[w + 1][x] == B_EMPTY)
-		end_game(g, 1, "Invalid map\n");
+		if (g->map.v[w][x] == b_ground && g->map.v[w - 1][x] == b_empty)
+			end_game(g, 1, "Invalid map 13\n");
+	if (g->map.v[w][x] == b_ground && g->map.v[w][x + 1] == b_empty
+		|| g->map.v[w][x] == b_ground && g->map.v[w + 1][x] == b_empty)
+		end_game(g, 1, "Invalid map 14\n");
 }
 
 void	verif_wall(t_game *g)
@@ -57,10 +57,10 @@ void	verif_wall(t_game *g)
 			check(x, w, g);
 			x++;
 		}
-		if (g->map.v[w][g->map.l - 1] == B_GROUND || g->map.v[w][0] == B_GROUND)
+		if (g->map.v[w][g->map.l - 1] == b_ground || g->map.v[w][0] == b_ground)
 			end_game(g, 1, "Invalid map\n");
 		w++;
 	}
-	if (g->map.h < 10 || g->map.l < 10)
+	if (g->map.h < 3 || g->map.l < 3)
 		end_game(g, 1, "Invalid map\n");
 }
