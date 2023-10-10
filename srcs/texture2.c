@@ -6,7 +6,7 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 05:38:38 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/10 15:27:58 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/10 15:33:01 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static int	get_texture(t_game *g, t_tex *t, char *path)
 	return (1);
 }
 
-int	get_texture2(t_game *g, char **ss, char *s)
+int	suite_get_texture2(t_game *g, char **ss, char *s)
 {
 	if (!ft_strncmp("NO", ss[0], 3) && !get_texture(g, &g->tex[t_no], ss[1]))
 		return (return_error(s, ss));
@@ -35,6 +35,11 @@ int	get_texture2(t_game *g, char **ss, char *s)
 		return (return_error(s, ss));
 	if (!ft_strncmp("DO", ss[0], 3) && !get_texture(g, &g->tex[t_do], ss[1]))
 		return (return_error(s, ss));
+}
+
+int	get_texture2(t_game *g, char **ss, char *s)
+{
+	suite_get_texture2(g, ss, s);
 	if (!ft_strncmp("FL", ss[0], 3) && !get_texture(g, &g->tex[t_fl], ss[1]))
 		return (return_error(s, ss));
 	if (!ft_strncmp("CL", ss[0], 3) && !get_texture(g, &g->tex[t_cl], ss[1]))
