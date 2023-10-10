@@ -3,14 +3,14 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: minh-ngu <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/28 10:56:09 by minh-ngu          #+#    #+#              #
-#    Updated: 2023/10/09 21:47:11 by ngoc             ###   ########.fr        #
+#    Updated: 2023/10/10 15:07:56 by nbechon          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS = main.c map.c draw.c mini_map.c hook.c math.c texture.c sprites.c	render_box.c get_A.c get_B.c frames.c for_check.c for_hero_map.c
+SRCS = main.c map.c draw.c mini_map.c hook.c math.c texture.c sprites.c	render_box.c get_A.c get_B.c frames.c for_check.c for_hero_map.c endgame.c init_game.c precalcul_game.c map_suite.c texture2.c hook2.c
 MSRC = $(addprefix srcs/, $(SRCS))
 MOBJ = ${MSRC:.c=.o}
 MANDA = cub3D

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3D.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 21:01:13 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/09 21:14:14 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/10 15:07:46 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,5 +264,18 @@ float	render_box(t_game *g, int ix);
 void	get_b(t_game *g, int ix, float ai);
 void	get_ab(t_game *g, int ix);
 void	frames(t_game *g);
+int		end_game(t_game *g, int exit_code, char *s);
+void	init(t_game *g);
+int		precalcul(t_game *g);
+void	get_pos1(int i, int j, char c, t_game *g);
+void	get_pos2(int i, int j, char c, t_game *g);
+void	init_boxsize(t_game *g);
+void	add_sprite(float px, double py, enum e_map type, t_game *g);
+void	free_map(t_map *m);
+void	order(t_game *g);
+int		get_texture2(t_game *g, char **ss, char *s);
+static int	get_texture(t_game *g, t_tex *t, char *path);
+void	key_release2(t_game *g, int keycode);
+void	key_release3(t_game *g, int keycode);
 
 #endif

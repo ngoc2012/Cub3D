@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_map.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   by: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 14:35:06 by nbechon           #+#    #+#             */
-/*   Updated: 2023/10/09 20:56:40 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/10 14:33:41 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void	draw_hero_and_wall(t_game *g, int l, int h, int *addr)
 	draw_hero(h / 2, l / 2, addr);
 }
 
-draw_life(int *addr, int l)
+void	draw_life(int *addr, int l)
 {
 	int	i;
 	int	j;
@@ -107,7 +107,8 @@ draw_life(int *addr, int l)
 			j = 6;
 			while (j < 20)
 			{
-				addr[(HEIGHT - 30 + i) * WIDTH + (WIDTH - j - n)] = create_trgb(255, 255, 0, 0);
+				addr[(HEIGHT - 30 + i) * WIDTH + (WIDTH - j - n)]
+					= create_trgb(255, 255, 0, 0);
 				j++;
 			}
 			i++;
