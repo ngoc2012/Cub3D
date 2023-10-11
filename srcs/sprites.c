@@ -6,202 +6,114 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/10 15:28:43 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/11 10:11:00 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
-// void	render_sprites3(t_game *g)
-// {
-// 	int	h_slide0;
-// 	int	start;
-// 	int	color;
-
-// 	if ((45.0 < g->a1[g->pos.rot] && g->a1[g->pos.rot] < 135.0)
-// 		|| (-135.0 < g->a1[g->pos.rot] && g->a1[g->pos.rot] < -45.0))
-// 		tx = (int)((g->eq.x - start_x + 0.5)
-// 				/ (end_x - start_x) * (float) tex->l) - 1;
-// 	else
-// 		tx = (int)((g->eq.y - start_y + 0.5)
-// 				/ (end_y - start_y) * (float) tex->l) - 1;
-// 	if (tx < 0)
-// 		tx = 0;
-// 	h = tex->h / dsp * g->dpp;
-// 	p = 1.0 / dsp * g->dpp;
-// 	h_slide0 = (int)(BOX_SIZE / dsp * g->dpp);
-// 	h_slide = (int)(tex->h / dsp * g->dpp);
-// 	if (h_slide > HEIGHT)
-// 		h_slide = HEIGHT;
-// 	start = HEIGHT / 2 + h_slide0 / 2 - h_slide;
-// 	if (start < 0)
-// 		start = 0;
-// 	if (start > HEIGHT - 1)
-// 		start = HEIGHT - 1;
-// 	addr = (int *)g->mlx.addr;
-// 	addr += ix + start * WIDTH;
-// 	yp = -1;
-// 	while (++yp < h_slide)
-// 	{
-// 		ty = (int)(((h - (float) h_slide) / 2.0 + (double) yp + 0.5) / p - 1);
-// 		if (ty < 0)
-// 			ty = 0;
-// 		color = *(addr_t + tx + ty * tex->l);
-// 		if (color > 0 && addr - WIDTH * HEIGHT < (int *)g->mlx.addr)
-// 			*addr = color;
-// 		addr += WIDTH;
-// 	}
-// 	if (g->shoot && g->sprites[i].type == b_sprite && g->sprites[i].state
-// 		!= s_die && (ix == WIDTH / 2 || ix == WIDTH / 2 - 1))
-// 		*sp = &g->sprites[i];
-// }
-
-// void	render_sprites2(t_game *g, int i, int ix, float dsp, float d, t_sprite **sp, )
-// {
-// 	float	start_x;
-// 	float	start_y;
-// 	float	end_x;
-// 	float	end_y;
-
-// 	if (g->cos_a1[g->pos.rot] * (g->sprites[i].px - g->pos.px)
-// 		- g->sin_a1[g->pos.rot] * (g->sprites[i].py - g->pos.py) >= 0)
-// 	{
-// 		g->eq.a1 = g->cos_a1[g->pos.rot];
-// 		g->eq.b1 = -g->sin_a1[g->pos.rot];
-// 		g->eq.c1 = g->eq.a1 * g->sprites[i].px + g->eq.b1 * g->sprites[i].py;
-// 		g->eq.a2 = -g->sin_ai[ix][g->pos.rot];
-// 		g->eq.b2 = -g->cos_ai[ix][g->pos.rot];
-// 		g->eq.c2 = g->eq.a2 * g->pos.px + g->eq.b2 * g->pos.py;
-// 		g->eq.det = 1.0;
-// 		g->eq.get_xy(&g->eq);
-// 		start_x = g->sprites[i].px - tex->l / 2 * g->sin_a1[g->pos.rot];
-// 		start_y = g->sprites[i].py - tex->l / 2 * g->cos_a1[g->pos.rot];
-// 		end_x = start_x + tex->l * g->sin_a1[g->pos.rot];
-// 		end_y = start_y + tex->l * g->cos_a1[g->pos.rot];
-// 		if ((start_x - g->eq.x) * (end_x - g->eq.x)
-// 			+ (start_y - g->eq.y) * (end_y - g->eq.y) <= 0)
-// 		{
-// 			if ((45.0 < ai && ai < 135.0) || (-135.0 < ai && ai < -45.0))
-// 				dsp = (g->eq.x - g->pos.px) / g->cos_ai[ix][g->pos.rot];
-// 			else
-// 				dsp = (g->eq.y - g->pos.py) / g->sin_ai[ix][g->pos.rot];
-// 			if (dsp < 0)
-// 				dsp = -dsp;
-// 			dsp /= g->cos_ai0[ix];
-// 			if (dsp < d)
-// 				reder_sprites3(g);
-// 		}
-// 	}
-// }
-
-// void	render_sprites(t_game *g, int ix, float d, t_sprite **sp)
-// {
-// 	int		tx;
-// 	int		ty;
-// 	int		h_slide;
-// 	float	h;
-// 	float	p;
-// 	int		*addr;
-// 	int		*addr_t;
-// 	t_tex	*tex;
-// 	float	dsp;
-// 	int		i;
-// 	float	ai;
-// 	int		yp;
-
-// 	i = -1;
-// 	ai = g->ai[ix][g->pos.rot];
-// 	while (++i < g->n_sprites)
-// 	{
-// 		tex = g->sprites[i].tex;
-// 		addr_t = (int *)tex->addr;
-// 		render_sprites2(g, i, ix, dsp, d, sp);
-// 	}
-// }
-
-void	render_sprites(t_game *g, int ix, float d, t_sprite **sp)
+static int	g_s(t_game *g, t_tex *tex, t_render *r, int hs)
 {
-	// sprite
-	int	tx;
-	int	ty;
-	int	h_slide;
-	float	h;
-	float	p;
+	int	start;
+
+	start = HEIGHT / 2 + (int)(BOX_SIZE / r->d * g->dpp) / 2 - hs;
+	if (start < 0)
+		start = 0;
+	if (start > HEIGHT - 1)
+		start = HEIGHT - 1;
+	return (start);
+}
+
+static void	render(t_game *g, t_tex *tex, t_render *r)
+{
+	int	hs;
 	int	*addr;
-	int	*addr_t;
-	t_tex	*tex;
-	float	dsp;
-	int	i = -1;
-	float	ai = g->ai[ix][g->pos.rot];
 	int	yp;
+	int	color;
 
-	while (++i < g->n_sprites)
+	r->h = tex->h / r->d * g->dpp;
+	r->p = 1.0 / r->d * g->dpp;
+	hs = (int)(tex->h / r->d * g->dpp);
+	if (hs > HEIGHT)
+		hs = HEIGHT;
+	addr = (int *)g->mlx.addr + r->ix + g_s(g, tex, r, hs) * WIDTH;
+	yp = -1;
+	while (++yp < hs)
 	{
-		tex = g->sprites[i].tex;
-		addr_t = (int *)tex->addr;
-		if (g->cos_a1[g->pos.rot] * (g->sprites[i].px - g->pos.px) - g->sin_a1[g->pos.rot] * (g->sprites[i].py - g->pos.py) >= 0)
-		{
-			g->eq.a1 =  g->cos_a1[g->pos.rot];
-			g->eq.b1 = -g->sin_a1[g->pos.rot];
-			g->eq.c1 = g->eq.a1 * g->sprites[i].px + g->eq.b1 * g->sprites[i].py;
-			g->eq.a2 = -g->sin_ai[ix][g->pos.rot];
-			g->eq.b2 = -g->cos_ai[ix][g->pos.rot];
-			g->eq.c2 = g->eq.a2 * g->pos.px + g->eq.b2 * g->pos.py;
-			g->eq.det = 1.0;
-			g->eq.get_xy(&g->eq);
-			float	start_x = g->sprites[i].px - tex->l / 2 * g->sin_a1[g->pos.rot];
-			float	start_y = g->sprites[i].py - tex->l / 2 * g->cos_a1[g->pos.rot];
-			float	end_x = start_x + tex->l * g->sin_a1[g->pos.rot];
-			float	end_y = start_y + tex->l * g->cos_a1[g->pos.rot];
+		r->ty = (int)(((r->h - (float) hs) / 2.0 + \
+		(double) yp + 0.5) / r->p - 1);
+		if (r->ty < 0)
+			r->ty = 0;
+		color = *((int *)tex->addr + r->tx + r->ty * tex->l);
+		if (color > 0 && addr - WIDTH * HEIGHT < (int *)g->mlx.addr)
+			*addr = color;
+		addr += WIDTH;
+	}
+}
 
-			if ((start_x - g->eq.x) * (end_x - g->eq.x) + (start_y - g->eq.y) * (end_y - g->eq.y) <= 0)
+static void	math(t_game *g, t_tex *tex, t_render *r)
+{
+	g->eq.a1 = g->cos_a1[g->pos.rot];
+	g->eq.b1 = -g->sin_a1[g->pos.rot];
+	g->eq.c1 = g->eq.a1 * g->sprites[r->i].px + g->eq.b1 * g->sprites[r->i].py;
+	g->eq.a2 = -g->sin_ai[r->ix][g->pos.rot];
+	g->eq.b2 = -g->cos_ai[r->ix][g->pos.rot];
+	g->eq.c2 = g->eq.a2 * g->pos.px + g->eq.b2 * g->pos.py;
+	g->eq.det = 1.0;
+	g->eq.get_xy(&g->eq);
+	r->start_x = g->sprites[r->i].px - tex->l / 2 * g->sin_a1[g->pos.rot];
+	r->start_y = g->sprites[r->i].py - tex->l / 2 * g->cos_a1[g->pos.rot];
+	r->end_x = r->start_x + tex->l * g->sin_a1[g->pos.rot];
+	r->end_y = r->start_y + tex->l * g->cos_a1[g->pos.rot];
+}
+
+static void	render_all(t_game *g, t_tex *tex, t_render *r, t_sprite **sp)
+{
+	if (r->d < 0)
+		r->d = -r->d;
+	r->d /= g->cos_ai0[r->ix];
+	if (r->d < r->d0)
+	{
+		if ((45.0 < g->a1[g->pos.rot] && g->a1[g->pos.rot] < 135.0)
+			|| (-135.0 < g->a1[g->pos.rot] && g->a1[g->pos.rot] < -45.0))
+			r->tx = (int)((g->eq.x - r->start_x + 0.5) / \
+			(r->end_x - r->start_x) * (float) tex->l) - 1;
+		else
+			r->tx = (int)((g->eq.y - r->start_y + 0.5) / \
+			(r->end_y - r->start_y) * (float) tex->l) - 1;
+		if (r->tx < 0)
+			r->tx = 0;
+		render(g, tex, r);
+		if (g->shoot && g->sprites[r->i].type == b_sprite
+			&& g->sprites[r->i].state != s_die
+			&& (r->ix == WIDTH / 2 || r->ix == WIDTH / 2 - 1))
+			*sp = &g->sprites[r->i];
+	}
+}
+
+void	render_sprites(t_game *g, int ix, float d0, t_sprite **sp)
+{
+	t_render	r;
+	float		ai;
+
+	r.i = -1;
+	r.ix = ix;
+	r.d0 = d0;
+	ai = g->ai[r.ix][g->pos.rot];
+	while (++r.i < g->n_sprites)
+	{
+		if (g->cos_a1[g->pos.rot] * (g->sprites[r.i].px - g->pos.px) - \
+			g->sin_a1[g->pos.rot] * (g->sprites[r.i].py - g->pos.py) >= 0)
+		{
+			math(g, g->sprites[r.i].tex, &r);
+			if ((r.start_x - g->eq.x) * (r.end_x - g->eq.x) + \
+				(r.start_y - g->eq.y) * (r.end_y - g->eq.y) <= 0)
 			{
 				if ((45.0 < ai && ai < 135.0) || (-135.0 < ai && ai < -45.0))
-					dsp = (g->eq.x - g->pos.px) / g->cos_ai[ix][g->pos.rot];
+					r.d = (g->eq.x - g->pos.px) / g->cos_ai[r.ix][g->pos.rot];
 				else
-					dsp = (g->eq.y - g->pos.py) / g->sin_ai[ix][g->pos.rot];
-				if (dsp < 0)
-					dsp = -dsp;
-				dsp /= g->cos_ai0[ix];
-				if (dsp < d)
-				{
-					if ((45.0 < g->a1[g->pos.rot] && g->a1[g->pos.rot] < 135.0) ||
-							(-135.0 < g->a1[g->pos.rot] && g->a1[g->pos.rot] < -45.0))
-						tx = (int) ((g->eq.x - start_x + 0.5) / (end_x - start_x) * (float) tex->l) - 1;
-					else
-						tx = (int) ((g->eq.y - start_y + 0.5) / (end_y - start_y) * (float) tex->l) - 1;
-					if (tx < 0)
-						tx = 0;
-					h = tex->h / dsp * g->dpp;
-					p = 1.0 / dsp * g->dpp;
-					int	h_slide0 = (int) (BOX_SIZE / dsp * g->dpp);
-					h_slide = (int) (tex->h / dsp * g->dpp);
-					if (h_slide > HEIGHT)
-						h_slide = HEIGHT;
-					int	start = HEIGHT / 2 + h_slide0 / 2 - h_slide;
-					if (start < 0)
-						start = 0;
-					if (start > HEIGHT - 1)
-						start = HEIGHT - 1;
-					addr = (int *)g->mlx.addr;
-					addr += ix + start * WIDTH;
-
-					yp = -1;
-					while (++yp < h_slide)
-					{
-						ty = (int) (((h - (float) h_slide) / 2.0 + (double) yp + 0.5) / p - 1);
-						if (ty < 0)
-							ty = 0;
-						int	color;
-						color = *(addr_t + tx + ty * tex->l);
-						if (color > 0 && addr - WIDTH * HEIGHT < (int *)g->mlx.addr)
-							*addr = color;
-						addr += WIDTH;
-					}
-
-					if (g->shoot && g->sprites[i].type == b_sprite && g->sprites[i].state != s_die && (ix == WIDTH / 2 || ix == WIDTH / 2 - 1))
-						*sp = &g->sprites[i];
-				}
+					r.d = (g->eq.y - g->pos.py) / g->sin_ai[r.ix][g->pos.rot];
+				render_all(g, g->sprites[r.i].tex, &r, sp);
 			}
 		}
 	}

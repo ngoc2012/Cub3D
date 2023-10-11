@@ -6,7 +6,7 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 21:01:13 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/10 15:07:46 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/11 10:14:39 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,14 +234,24 @@ typedef struct s_render {
 	int		yh;
 	int		tx;
 	int		ty;
+	int		i;
+	int		ix;
 	float	xph;
 	float	yph;
 	float	dh;
 	float	d;
+	float	h;
+	float	p;
+	float	d0;
+	float	start_x;
+	float	start_y;
+	float	end_x;
+	float	end_y;
 	t_tex	*tex;
 }	t_render;
 
 void	free_map(t_map *m);
+void	free_array(float **a, int size);
 int		get_map(t_game *g, char *fn);
 int		draw(t_game *g);
 int		key_hook(int keycode, t_game *g);
@@ -274,7 +284,6 @@ void	add_sprite(float px, double py, enum e_map type, t_game *g);
 void	free_map(t_map *m);
 void	order(t_game *g);
 int		get_texture2(t_game *g, char **ss, char *s);
-static int	get_texture(t_game *g, t_tex *t, char *path);
 void	key_release2(t_game *g, int keycode);
 void	key_release3(t_game *g, int keycode);
 
