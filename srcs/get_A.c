@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   get_A.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 21:15:59 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/09 21:24:14 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/11 15:50:51 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
-static void	get_a1(t_game *g, int ix, float ai)
+static void	get_a1(t_game *g, float ai)
 {
 	int	door_coor;
 	int	ax;
@@ -87,7 +87,7 @@ static void	get_a(t_game *g, int ix, float ai)
 	g->pos.ay = g->pos.apy / BOX_SIZE;
 	if (ai > 0.0)
 		g->pos.ay--;
-	get_a1(g, ix, ai);
+	get_a1(g, ai);
 	get_a2(g, ix, ai);
 }
 

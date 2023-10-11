@@ -6,7 +6,7 @@
 #    By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/28 10:56:09 by minh-ngu          #+#    #+#              #
-#    Updated: 2023/10/11 15:25:35 by nbechon          ###   ########.fr        #
+#    Updated: 2023/10/11 16:02:41 by nbechon          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,8 +15,8 @@ MSRC = $(addprefix srcs/, $(SRCS))
 MOBJ = ${MSRC:.c=.o}
 MANDA = cub3D
 CC = cc
-#FLAGS = -Wall -Wextra -Werror
-FLAGS = -Wall
+FLAGS = -Wall -Wextra -Werror
+# FLAGS = -Wall
 LIBFT = libft/libft.a
 LIBGNL = GNL/libgnl.a
 LIBML = minilibx-linux/libft_Linux.a

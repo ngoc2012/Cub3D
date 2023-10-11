@@ -6,7 +6,7 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 21:01:13 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/11 15:28:49 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/11 16:07:07 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,8 +115,8 @@ typedef struct s_pos {
 	float	apy;
 	float	bpx;
 	float	bpy;
-	float	da;
-	float	db;
+	int		da;
+	int		db;
 }	t_pos;
 
 /*
@@ -207,7 +207,7 @@ typedef struct s_game {
 	t_tex			sp_hit[5];
 	t_tex			*gun_tex;
 	t_sprite		*sprites;
-	unsigned int	n_sprites;
+	int				n_sprites;
 	unsigned int	shoot;
 	int				opened_door_x;
 	int				opened_door_y;
@@ -250,11 +250,16 @@ typedef struct s_render {
 	t_tex	*tex;
 }	t_render;
 
+void	finish(char *s, int fd, t_game *g);
+int		get_color(char *s);
+int		return_error(char *s, char **ss);
+int		check_map(char *s);
+void	verif_wall(t_game *g);
 void	key_press_norm2(t_game *g, int keycode);
-float	norm(float dx, int keycode, t_game *g);
-float	norm2(float dy, int keycode, t_game *g);
-float	norm3(float dx, int keycode, t_game *g);
-float	norm4(float dy, int keycode, t_game *g);
+float	norm(int keycode, t_game *g);
+float	norm2(int keycode, t_game *g);
+float	norm3(int keycode, t_game *g);
+float	norm4(int keycode, t_game *g);
 void	free_map(t_map *m);
 void	free_array(float **a, int size);
 int		get_map(t_game *g, char *fn);
@@ -270,7 +275,7 @@ void	render_backgroud(t_game *g);
 void	scale_window(t_game *g);
 int		key_press(int keycode, t_game *g);
 int		key_release(int keycode, t_game *g);
-int		mouse_hook(int button, int x, int y, t_game *g);
+int		mouse_hook(int button, int x, t_game *g);
 void	sort_sprites(t_game *g);
 int		create_trgb(unsigned char t, unsigned char r,
 			unsigned char g, unsigned char b);
@@ -289,8 +294,8 @@ void	add_sprite(float px, double py, enum e_map type, t_game *g);
 void	free_map(t_map *m);
 void	order(t_game *g);
 int		get_texture2(t_game *g, char **ss, char *s);
-void	key_release2(t_game *g, int keycode);
-void	key_release3(t_game *g, int keycode);
+void	key_release2(t_game *g);
+void	key_release3(t_game *g);
 void	for_check_map(t_game *g, char *fn, int count_perso);
 
 #endif

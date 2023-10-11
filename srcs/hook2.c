@@ -6,14 +6,14 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 14:35:06 by nbechon           #+#    #+#             */
-/*   Updated: 2023/10/10 15:10:00 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/11 16:04:52 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include "cub3D.h"
 
-void	key_release3(t_game *g, int keycode)
+void	key_release3(t_game *g)
 {
 	if (g->map.v[g->pos.y][g->pos.x - 1] == b_door)
 	{
@@ -31,7 +31,7 @@ void	key_release3(t_game *g, int keycode)
 	}
 }
 
-void	key_release2(t_game *g, int keycode)
+void	key_release2(t_game *g)
 {
 	if (g->map.v[g->pos.y - 1][g->pos.x] == b_door)
 	{

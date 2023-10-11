@@ -6,7 +6,7 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 14:35:06 by nbechon           #+#    #+#             */
-/*   Updated: 2023/10/10 13:20:45 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/11 15:55:51 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ void	check(int x, int w, t_game *g)
 	if (w != 0)
 		if (g->map.v[w][x] == b_ground && g->map.v[w - 1][x] == b_empty)
 			end_game(g, 1, "Invalid map 13\n");
-	if (g->map.v[w][x] == b_ground && g->map.v[w][x + 1] == b_empty
-		|| g->map.v[w][x] == b_ground && g->map.v[w + 1][x] == b_empty)
+	if ((g->map.v[w][x] == b_ground && g->map.v[w][x + 1] == b_empty)
+		|| (g->map.v[w][x] == b_ground && g->map.v[w + 1][x] == b_empty))
 		end_game(g, 1, "Invalid map 14\n");
 }
 

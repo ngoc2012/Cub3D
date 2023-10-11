@@ -6,7 +6,7 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 14:35:06 by nbechon           #+#    #+#             */
-/*   Updated: 2023/10/11 15:16:50 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/11 15:38:43 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	draw_hero_and_wall(t_game *g, int *addr)
 	}
 }
 
-void	draw_life(int *addr, int l)
+void	draw_life(int *addr)
 {
 	int	i;
 	int	j;
@@ -124,5 +124,5 @@ void	draw_mini_map(t_game *g)
 	addr = (int *)g->mlx.addr;
 	draw_hero_and_wall(g, addr);
 	draw_hero((HEIGHT / 4 / 2), (WIDTH / 4 / 2), addr);
-	draw_life(addr, WIDTH / 3);
+	draw_life(addr);
 }

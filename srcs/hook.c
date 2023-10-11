@@ -6,7 +6,7 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 14:35:06 by nbechon           #+#    #+#             */
-/*   Updated: 2023/10/11 15:29:21 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/11 16:05:55 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,13 +73,13 @@ int	key_press(int keycode, t_game *g)
 	{
 		if (keycode == XK_w || keycode == XK_s)
 		{
-			dx = norm(dx, keycode, g);
-			dy = norm2(dy, keycode, g);
+			dx = norm(keycode, g);
+			dy = norm2(keycode, g);
 		}
 		else
 		{
-			dx = norm3(dx, keycode, g);
-			dy = norm4(dy, keycode, g);
+			dx = norm3(keycode, g);
+			dy = norm4(keycode, g);
 		}
 		x = (int)((g->pos.px - dx) / BOX_SIZE);
 		y = (int)((g->pos.py + dy) / BOX_SIZE);
@@ -93,8 +93,8 @@ int	key_release(int keycode, t_game *g)
 {
 	if (keycode == XK_space && !g->frames[fr_door])
 	{
-		key_release2(g, keycode);
-		key_release3(g, keycode);
+		key_release2(g);
+		key_release3(g);
 	}
 	if (keycode == XK_Control_L || keycode == XK_Control_R)
 	{
@@ -110,7 +110,7 @@ int	key_release(int keycode, t_game *g)
 	return (1);
 }
 
-int	mouse_hook(int button, int x, int y, t_game *g)
+int	mouse_hook(int button, int x, t_game *g)
 {
 	float	alpha;
 

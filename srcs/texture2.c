@@ -6,7 +6,7 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 05:38:38 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/10 15:33:01 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/11 16:03:55 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ int	suite_get_texture2(t_game *g, char **ss, char *s)
 		return (return_error(s, ss));
 	if (!ft_strncmp("DO", ss[0], 3) && !get_texture(g, &g->tex[t_do], ss[1]))
 		return (return_error(s, ss));
+	return (0);
 }
 
 int	get_texture2(t_game *g, char **ss, char *s)
@@ -64,6 +65,7 @@ int	get_texture2(t_game *g, char **ss, char *s)
 		if (!g->cl_color)
 			return (return_error(s, ss));
 	}
+	return (0);
 }
 
 void	order(t_game *g)

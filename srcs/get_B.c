@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_B.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ngoc <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 21:38:22 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/09 21:42:57 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/11 15:55:07 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	get_b2(t_game *g, int ix, float ai)
 			/ g->cos_ai[ix][g->pos.rot];
 }
 
-void	get_b1(t_game *g, int ix, float ai)
+void	get_b1(t_game *g, float ai)
 {
 	int	door_coor;
 
@@ -89,6 +89,6 @@ void	get_b(t_game *g, int ix, float ai)
 		return ;
 	}
 	g->pos.by = g->pos.bpy / BOX_SIZE;
-	get_b1(g, ix, ai);
+	get_b1(g, ai);
 	get_b2(g, ix, ai);
 }

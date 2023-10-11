@@ -6,13 +6,13 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/11 10:11:00 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/11 15:50:18 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
-static int	g_s(t_game *g, t_tex *tex, t_render *r, int hs)
+static int	g_s(t_game *g, t_render *r, int hs)
 {
 	int	start;
 
@@ -36,7 +36,7 @@ static void	render(t_game *g, t_tex *tex, t_render *r)
 	hs = (int)(tex->h / r->d * g->dpp);
 	if (hs > HEIGHT)
 		hs = HEIGHT;
-	addr = (int *)g->mlx.addr + r->ix + g_s(g, tex, r, hs) * WIDTH;
+	addr = (int *)g->mlx.addr + r->ix + g_s(g, r, hs) * WIDTH;
 	yp = -1;
 	while (++yp < hs)
 	{
