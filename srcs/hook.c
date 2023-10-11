@@ -6,33 +6,33 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 14:35:06 by nbechon           #+#    #+#             */
-/*   Updated: 2023/10/11 16:05:55 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/11 18:12:58 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
-void	key_press_norm(t_game *g, int x, int y, float dx, float dy, int keycode)
+void	key_press_norm(t_game *g, t_pos *p, int keycode)
 {
 	if (((keycode == XK_w && !g->frames[fr_up])
 			|| (keycode == XK_s && !g->frames[fr_down])
 			|| (keycode == XK_a && !g->frames[fr_left])
 			|| (keycode == XK_d && !g->frames[fr_right]))
-		&& (x > 0 && y > 0 && x < g->map.l
-			&& y < g->map.h && g->map.v[y][x] == b_ground
-		&& g->map.v[y][(int)((g->pos.px - dx + WALL_COLISION)
+		&& (p->x > 0 && p->y > 0 && p->x < g->map.l
+			&& p->y < g->map.h && g->map.v[p->y][p->x] == b_ground
+		&& g->map.v[p->y][(int)((g->pos.px - p->px + WALL_COLISION)
 		/ BOX_SIZE)] == b_ground
-		&& g->map.v[y][(int)((g->pos.px - dx - WALL_COLISION)
+		&& g->map.v[p->y][(int)((g->pos.px - p->px - WALL_COLISION)
 		/ BOX_SIZE)] == b_ground
-		&& g->map.v[(int)((g->pos.py + dy + WALL_COLISION)
-		/ BOX_SIZE)][x] == b_ground
-		&& g->map.v[(int)((g->pos.py + dy - WALL_COLISION)
-		/ BOX_SIZE)][x] == b_ground))
+		&& g->map.v[(int)((g->pos.py + p->py + WALL_COLISION)
+		/ BOX_SIZE)][p->x] == b_ground
+		&& g->map.v[(int)((g->pos.py + p->py - WALL_COLISION)
+		/ BOX_SIZE)][p->x] == b_ground))
 	{
-		g->pos.px -= dx;
-		g->pos.py += dy;
-		g->pos.x = x;
-		g->pos.y = y;
+		g->pos.px -= p->px;
+		g->pos.py += p->py;
+		g->pos.x = p->x;
+		g->pos.y = p->y;
 		sort_sprites(g);
 		key_press_norm2(g, keycode);
 	}
@@ -63,27 +63,24 @@ void	seconde_key_press(t_game *g, int keycode)
 
 int	key_press(int keycode, t_game *g)
 {
-	float	dx;
-	float	dy;
-	int		x;
-	int		y;
+	t_pos	p;
 
 	if (keycode == XK_w || keycode == XK_s
 		|| keycode == XK_a || keycode == XK_d)
 	{
 		if (keycode == XK_w || keycode == XK_s)
 		{
-			dx = norm(keycode, g);
-			dy = norm2(keycode, g);
+			p.px = norm(keycode, g);
+			p.py = norm2(keycode, g);
 		}
 		else
 		{
-			dx = norm3(keycode, g);
-			dy = norm4(keycode, g);
+			p.px = norm3(keycode, g);
+			p.py = norm4(keycode, g);
 		}
-		x = (int)((g->pos.px - dx) / BOX_SIZE);
-		y = (int)((g->pos.py + dy) / BOX_SIZE);
-		key_press_norm(g, x, y, dx, dy, keycode);
+		p.x = (int)((g->pos.px - p.px) / BOX_SIZE);
+		p.y = (int)((g->pos.py + p.py) / BOX_SIZE);
+		key_press_norm(g, &p, keycode);
 	}
 	seconde_key_press(g, keycode);
 	return (1);
@@ -110,10 +107,11 @@ int	key_release(int keycode, t_game *g)
 	return (1);
 }
 
-int	mouse_hook(int button, int x, t_game *g)
+int	mouse_hook(int button, int x, int y, t_game *g)
 {
 	float	alpha;
 
+	(void)y;
 	if (button == 1)
 	{
 		alpha = atan(((float) x / SCALE - WIDTH / 2) / g->dpp) * 180.0 / PI;

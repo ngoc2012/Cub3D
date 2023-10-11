@@ -6,7 +6,7 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 21:01:13 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/11 16:07:07 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/11 18:06:19 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,8 @@ typedef struct s_map {
 	int			l;
 	int			ph;
 	int			pl;
+	int			perso;
+	int			in_map;
 }	t_map;
 
 /*
@@ -115,8 +117,8 @@ typedef struct s_pos {
 	float	apy;
 	float	bpx;
 	float	bpy;
-	int		da;
-	int		db;
+	float	da;
+	float	db;
 }	t_pos;
 
 /*
@@ -275,7 +277,7 @@ void	render_backgroud(t_game *g);
 void	scale_window(t_game *g);
 int		key_press(int keycode, t_game *g);
 int		key_release(int keycode, t_game *g);
-int		mouse_hook(int button, int x, t_game *g);
+int		mouse_hook(int button, int x, int y, t_game *g);
 void	sort_sprites(t_game *g);
 int		create_trgb(unsigned char t, unsigned char r,
 			unsigned char g, unsigned char b);
@@ -296,6 +298,6 @@ void	order(t_game *g);
 int		get_texture2(t_game *g, char **ss, char *s);
 void	key_release2(t_game *g);
 void	key_release3(t_game *g);
-void	for_check_map(t_game *g, char *fn, int count_perso);
+void	for_check_map(t_game *g, char *fn);
 
 #endif

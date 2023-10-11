@@ -6,7 +6,7 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 12:57:31 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/11 14:52:06 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/11 17:01:06 by ngoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	finish(char *s, int fd, t_game *g)
 void	call(t_game *g, char *fn)
 {
 	init_boxsize(g);
-	for_check_map(g, fn, 0);
+	for_check_map(g, fn);
 	verif_wall(g);
 }
 
