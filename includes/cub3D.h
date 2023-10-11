@@ -6,7 +6,7 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 21:01:13 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/11 10:14:39 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/11 15:28:49 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,6 +250,11 @@ typedef struct s_render {
 	t_tex	*tex;
 }	t_render;
 
+void	key_press_norm2(t_game *g, int keycode);
+float	norm(float dx, int keycode, t_game *g);
+float	norm2(float dy, int keycode, t_game *g);
+float	norm3(float dx, int keycode, t_game *g);
+float	norm4(float dy, int keycode, t_game *g);
 void	free_map(t_map *m);
 void	free_array(float **a, int size);
 int		get_map(t_game *g, char *fn);
@@ -286,5 +291,6 @@ void	order(t_game *g);
 int		get_texture2(t_game *g, char **ss, char *s);
 void	key_release2(t_game *g, int keycode);
 void	key_release3(t_game *g, int keycode);
+void	for_check_map(t_game *g, char *fn, int count_perso);
 
 #endif

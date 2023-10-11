@@ -6,11 +6,10 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 14:35:06 by nbechon           #+#    #+#             */
-/*   Updated: 2023/10/10 15:09:38 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/11 15:29:21 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include "cub3D.h"
 
 void	key_press_norm(t_game *g, int x, int y, float dx, float dy, int keycode)
@@ -35,14 +34,7 @@ void	key_press_norm(t_game *g, int x, int y, float dx, float dy, int keycode)
 		g->pos.x = x;
 		g->pos.y = y;
 		sort_sprites(g);
-		if (keycode == XK_w)
-			g->frames[fr_up] = 1;
-		else if (keycode == XK_s)
-			g->frames[fr_down] = 1;
-		else if (keycode == XK_a)
-			g->frames[fr_left] = 1;
-		else if (keycode == XK_d)
-			g->frames[fr_right] = 1;
+		key_press_norm2(g, keycode);
 	}
 }
 
@@ -81,23 +73,13 @@ int	key_press(int keycode, t_game *g)
 	{
 		if (keycode == XK_w || keycode == XK_s)
 		{
-			dx = (int)(TRANS_STEP * cos(g->pos.rot * ROT_STEP * PI / 180.0));
-			dy = (int)(TRANS_STEP * sin(g->pos.rot * ROT_STEP * PI / 180.0));
-			if (keycode == XK_w)
-			{
-				dx = -dx;
-				dy = -dy;
-			}
+			dx = norm(dx, keycode, g);
+			dy = norm2(dy, keycode, g);
 		}
 		else
 		{
-			dx = (int)(TRANS_STEP * sin(g->pos.rot * ROT_STEP * PI / 180.0));
-			dy = (int)(TRANS_STEP * -cos(g->pos.rot * ROT_STEP * PI / 180.0));
-			if (keycode == XK_d)
-			{
-				dx = -dx;
-				dy = -dy;
-			}
+			dx = norm3(dx, keycode, g);
+			dy = norm4(dy, keycode, g);
 		}
 		x = (int)((g->pos.px - dx) / BOX_SIZE);
 		y = (int)((g->pos.py + dy) / BOX_SIZE);

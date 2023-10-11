@@ -6,22 +6,11 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 14:35:06 by nbechon           #+#    #+#             */
-/*   Updated: 2023/10/10 13:43:07 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/11 15:11:30 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
-
-void	free_array(float **a, int size)
-{
-	int	i;
-
-	i = -1;
-	while (++i < size)
-		if (a[i])
-			free(a[i]);
-	free(a);
-}
 
 void	sort_sprites2(t_game *g)
 {
@@ -81,6 +70,12 @@ void	for_sprites(t_game *g)
 	}
 }
 
+void	main_norm(t_game g)
+{
+	if (!g.mlx.mlx || !g.mlx.win)
+		end_game(&g, EXIT_FAILURE, "Error mlx\n");
+}
+
 int	main(int argc, char **argv)
 {
 	t_game	g;
@@ -91,10 +86,9 @@ int	main(int argc, char **argv)
 		end_game(&g, EXIT_FAILURE, "Error map or memories\n");
 	sort_sprites(&g);
 	g.mlx.mlx = mlx_init();
-	g.mlx.win = mlx_new_window(g.mlx.mlx,
-			WIDTH * SCALE, HEIGHT * SCALE, "Cub3D");
-	if (!g.mlx.mlx || !g.mlx.win)
-		end_game(&g, EXIT_FAILURE, "Error mlx\n");
+	g.mlx.win = mlx_new_window(g.mlx.mlx, WIDTH * SCALE,
+			HEIGHT * SCALE, "Cub3D");
+	main_norm(g);
 	g.mlx.img = mlx_new_image(g.mlx.mlx, WIDTH, HEIGHT);
 	g.mlx.img_scale = mlx_new_image(g.mlx.mlx, WIDTH * SCALE, HEIGHT * SCALE);
 	g.mlx.addr = mlx_get_data_addr(g.mlx.img, &g.mlx.bpp, &g.mlx.ll, &g.mlx.ed);

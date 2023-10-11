@@ -6,7 +6,7 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 05:38:38 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/10 14:49:19 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/11 14:56:43 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,15 @@ int	get_color(char *s)
 			(unsigned int) c[1], (unsigned int) c[2]));
 }
 
+void	get_texture_norm(char *s, char **ss, t_game *g)
+{
+	s[ft_strlen(s) - 1] = 0;
+	ss = ft_split(s, ' ');
+	if (astr_len(ss) > 1)
+		get_texture2(g, ss, s);
+	free_array_str(&ss, 0);
+}
+
 int	get_textures(t_game *g, char *fn)
 {
 	int		fd;
@@ -56,13 +65,7 @@ int	get_textures(t_game *g, char *fn)
 		while (ft_strchr(" 	\n", *s))
 			s++;
 		if (ft_strlen(s) > 1)
-		{
-			s[ft_strlen(s) - 1] = 0;
-			ss = ft_split(s, ' ');
-			if (astr_len(ss) > 1)
-				get_texture2(g, ss, s);
-			free_array_str(&ss, 0);
-		}
+			get_texture_norm(s, ss, g);
 		free(s0);
 		s = get_next_line(fd);
 	}
