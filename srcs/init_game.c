@@ -6,7 +6,7 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 14:35:06 by nbechon           #+#    #+#             */
-/*   Updated: 2023/10/11 16:47:21 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/12 11:00:25 by minh-ngu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ void	init_suite(t_game *g)
 
 void	init_mapandhero(t_game *g)
 {
+	g->map.v = 0;
 	g->map.h = 0;
 	g->map.l = 0;
 	g->map.ph = 0;
