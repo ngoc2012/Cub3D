@@ -6,7 +6,7 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 05:38:38 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/11 15:58:58 by nbechon          ###   ########.fr       */
+/*   Updated: 2023/10/12 11:50:04 by minh-ngu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,13 @@ int	get_color(char *s)
 
 void	get_texture_norm(char *s, t_game *g)
 {
+	int		i;
 	char	**ss;
 
+	i = -1;
+	while (s[++i])
+		if (s[i] == '	')
+			s[i] = ' ';
 	s[ft_strlen(s) - 1] = 0;
 	ss = ft_split(s, ' ');
 	if (astr_len(ss) > 1)
