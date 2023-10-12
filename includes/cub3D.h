@@ -6,7 +6,7 @@
 /*   By: nbechon <nbechon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 21:01:13 by ngoc              #+#    #+#             */
-/*   Updated: 2023/10/11 18:06:19 by ngoc             ###   ########.fr       */
+/*   Updated: 2023/10/12 10:35:20 by nbechon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 
 # define WIDTH 600
 # define HEIGHT 300
-# define SCALE 4
+# define SCALE 2
 # define FOV 90
 # define BOX_SIZE 64
 # define WALL_COLISION 8
@@ -38,12 +38,12 @@
 # define ROT_SPEED 0
 # define GUN_SPEED 2
 # define DOOR_SPEED 1
-# define DOOR_IDLE 80
+# define DOOR_IDLE 100
 # define SPRITE_IDLE 5
 # define SPRITE_STATE 6
 # define HEALTH_SPRITE 2
 # define PI 3.141592654
-# define INFINI INT_MAX
+# define INFINI 4294967295.0
 # define COLOR_BOLD_SLOW_BLINKING      "\033[1;5m"
 # define COLOR_BOLD_SLOW_BLINKING_RED  "\033[1;5;31m"
 # define COLOR_BOLD_SLOW_BLINKING_BLUE  "\033[1;5;34m"
